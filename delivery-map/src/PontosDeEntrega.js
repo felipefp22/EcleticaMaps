@@ -49,26 +49,26 @@ function selectMarkerColor(minutes) {
     } else if (minutes > 25 && minutes <= 30) {
         return '#5715f1';
     } else if (minutes > 30 && minutes <= 35) {
-        return '#b6118d';
-    } else if (minutes > 35 && minutes <= 40) {
         return '#eb2778';
+    } else if (minutes > 35 && minutes <= 40) {
+        return '#b6118d';
 
     } else if (minutes > 40 && minutes <= 45) {
-        return '#eb8627';
+        return '#ec5b06';
     } else if (minutes > 45 && minutes <= 50) {
         return '#e42e0e';
     } else if (minutes > 50 && minutes <= 55) {
         return '#e40e0e';
     } else if (minutes > 55 && minutes <= 60) {
-        return '#e40e0e; border: 5px solid #f36818';
+        return '#e40e0e; border: 4px solid #f36818';
 
 
     } else if (minutes > 60 && minutes <= 65) {
-        return '#e40e0e; border: 10px solid #f36818'
+        return '#e40e0e; border: 7px solid #f36818'
     } else if (minutes > 65 && minutes <= 70) {
-        return '#e40e0e; border: 15px solid #f36818'
+        return '#e40e0e; border: 11px solid #f36818'
     } else if (minutes > 70) {
-        return '#e40e0e; border: 20px solid #f36818'
+        return '#e40e0e; border: 14px solid #f36818'
     }
 }
 
@@ -90,7 +90,7 @@ export const fetchPontosDeEntregaTeste = async () => {
             lat: -23.689047472947353,
             lng: -46.704394001780896,
             label: '3',
-            minutes: 1
+            minutes: 11
         },
         {
             lat: -23.691047472947353,
