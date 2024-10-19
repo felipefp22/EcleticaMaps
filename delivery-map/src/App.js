@@ -84,7 +84,7 @@ function App() {
   return (
     <div className="App">
 
-      <div className='barraSuperior'>
+      <div className='barraSuperior1'>
         <input type='text' placeholder='Endereço para centralizar Mapa' /> {/* Corrected here */}
         <button className='salvarLocalButton'>Salvar-Local</button>
         <button className='atualizarButton'>ATUALIZAR</button>
@@ -99,11 +99,11 @@ function App() {
 
       </div>
 
-      <div className='mapa' id='mapa' style={{ height: '800px', width: '100%' }}></div> {/* Div for the map */}
+      <div className='barraSuperior2'> </div>
 
 
-      <div className='barraPedidos'>
-      </div>
+      <div className='mapa' id='mapa' style={{ height: '90vh', width: '100vw' }}></div> {/* Div for the map */}
+
     </div>
   );
 }
