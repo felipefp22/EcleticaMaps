@@ -99,7 +99,9 @@ function App() {
 
       </div>
 
-      <div className='barraSuperior2'> </div>
+      <div className='barraSuperior2'>
+      <button style={{ width: '35px', height: '35px', backgroundColor: 'blue' }}></button> <h1 style={{ color: 'black' }}>1a5 min </h1>
+      </div>
 
 
       <div className='mapa' id='mapa' style={{ height: '90vh', width: '100vw' }}></div> {/* Div for the map */}
