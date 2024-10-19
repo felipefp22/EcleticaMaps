@@ -1,16 +1,17 @@
-import React, { useEffect,  useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './App.css';
 import L from 'leaflet'; // Import Leaflet
 import PizzaFav from './pizza.png'; // Import the image
 
-import importedVariables  from './myVariables.json'; // Import the JSON file directly
-import { fetchPontosDeEntrega, PontosDeEntrega } from './PontosDeEntrega';
+import importedVariables from './myVariables.json'; // Import the JSON file directly
+import { fetchPontosDeEntrega, fetchPontosDeEntregaTeste, PontosDeEntrega } from './PontosDeEntrega';
 
 function App() {
 
   const [myVariables, setMyVariables] = useState(importedVariables)
   const mapRef = useRef(null); // Referência para o mapa
   const [locations, setLocations] = useState([]); // State to hold locations
+  const [zoom, setZoom] = useState(20); // State to hold the zoom level
 
   useEffect(() => {
     // Inicializa o mapa
@@ -30,18 +31,17 @@ function App() {
       popupAnchor: [0, -40],
     });
     L.marker([myVariables.mainLocationLatitude, myVariables.mainLocationLongitude], { icon: pizzaIcon })
-    .addTo(mapRef.current)
-    .bindPopup('19 min')
-    .openPopup();
+      .addTo(mapRef.current)
+      .bindPopup('19 min')
+      .openPopup();
     //------------------------------
 
-    fetch(fetchPontosDeEntrega)
-    .then(response => response.json())
-    .then(data => {
-      setLocations(data); // Assuming data is an array of { lat, lng, label }
-    });
-
-    
+    // fetchPontosDeEntrega()
+    fetchPontosDeEntregaTeste()
+      .then(data => {
+        setLocations(data); // Update state with fetched data
+      })
+      .catch(error => console.error('Error fetching locations:', error));
 
     return () => {
       mapRef.current.remove(); // Remove o mapa ao desmontar para evitar leaks de memória
@@ -63,7 +63,7 @@ function App() {
   const centralizarMapa = () => {
     // Centraliza o mapa na posição especificada
     if (mapRef.current) {
-      mapRef.current.setView([myVariables.mainLocationLatitude, myVariables.mainLocationLongitude], 15);
+      mapRef.current.setView([myVariables.mainLocationLatitude, myVariables.mainLocationLongitude], zoom);
     }
   };
 
@@ -75,6 +75,13 @@ function App() {
         <input type='text' placeholder='Endereço para centralizar Mapa' /> {/* Corrected here */}
         <button className='salvarLocalButton'>Salvar-Local</button>
         <button className='atualizarButton'>ATUALIZAR</button>
+        <select className='selectZoom' onChange={(e) => setZoom(e.target.value)}>
+          <option value="14">1</option>
+          <option value="15">2</option>
+          <option value="16">3</option>
+          <option value="17">4</option>
+          <option value="18">4</option>
+        </select>
         <button onClick={centralizarMapa}>Centralizar Mapa</button> {/* Botão para centralizar o mapa */}
 
       </div>
@@ -89,29 +96,3 @@ function App() {
 }
 
 export default App;
-
-// L.marker([myVariables.mainLocationLatitude, myVariables.mainLocationLongitude]).addTo(mapRef.current)
-// .bindPopup('19 min')
-// .openPopup()
-// .setIcon(L.divIcon({
-//   html: `
-//     <div style="
-//       position: relative; 
-//       width: 40px; 
-//       height: 40px; 
-//       background-color: rgba(0, 0, 255, 0.589);
-//       background-size: cover;
-//       text-align: center;
-//       line-height: 40px;
-//       font-weight: 800;
-//       color: white;
-//       border-radius: 50px;
-
-//     ">
-//       1
-//     </div>`, // Aqui você pode substituir "1" pelo número que deseja exibir
-//   iconSize: [40, 40],
-//   iconAnchor: [20, 40],
-//   popupAnchor: [0, -40],
-//   className: '' // Remove a classe padrão
-// }));
