@@ -55,7 +55,8 @@ function App() {
         map: mapRef.current,
         lat: location.lat,
         lng: location.lng,
-        label: location.label, // Replace with your desired label
+        label: location.label,
+        minutes: location.minutes // Replace with your desired label
       });
     });
   }, [locations]);
