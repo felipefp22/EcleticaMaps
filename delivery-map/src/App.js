@@ -18,9 +18,9 @@ function App() {
     mapRef.current = L.map('mapa').setView([myVariables.mainLocationLatitude, myVariables.mainLocationLongitude], zoom); // Define a centralização do mapa
 
     // Adiciona uma camada de tiles do OpenStreetMap
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+      attribution: '&copy; OpenStreetMap contributors',
     }).addTo(mapRef.current);
 
     // Adicionando marcador principal
@@ -32,7 +32,7 @@ function App() {
     });
     L.marker([myVariables.mainLocationLatitude, myVariables.mainLocationLongitude], { icon: pizzaIcon })
       .addTo(mapRef.current)
-      .bindPopup('19 min')
+      .bindPopup('RESTAURANTE')
       .openPopup();
     //------------------------------
 
@@ -89,11 +89,11 @@ function App() {
         <button className='salvarLocalButton'>Salvar-Local</button>
         <button className='atualizarButton'>ATUALIZAR</button>
         <select className='selectZoom' onChange={handleZoomChange}>
-          <option value="14">1</option>
-          <option value="15">2</option>
-          <option value="16">3</option>
-          <option value="17">4</option>
-          <option value="18">5</option>
+          <option value="14">1 - Zoom</option>
+          <option value="15">2 - Zoom</option>
+          <option value="16">3 - Zoom</option>
+          <option value="17">4 - Zoom</option>
+          <option value="18">5 - Zoom</option>
         </select>
         <button onClick={centralizarMapa}>Centralizar Mapa</button> {/* Botão para centralizar o mapa */}
 

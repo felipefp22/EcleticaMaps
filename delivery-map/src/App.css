@@ -1,6 +1,4 @@
-*{
-  background-color: rgba(221, 145, 32, 0.479);
-}
+
 
 .barraSuperior1{
   background-color: rgb(148, 56, 235);
@@ -71,6 +69,7 @@ button:active{
   font-family:'Courier New', Courier, monospace;
   font-weight: 1000;
   font-size: 15px;
-  width: 50px
+  width: 110px
 }
+
 

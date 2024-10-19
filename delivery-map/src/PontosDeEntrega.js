@@ -60,7 +60,7 @@ function selectMarkerColor(minutes) {
     } else if (minutes > 50 && minutes <= 55) {
         return '#e40e0e';
     } else if (minutes > 55 && minutes <= 60) {
-        return '#e40e0e; border: 4px solid #f36818';
+        return '#e40e0e; border: 5px solid #f36818';
 
 
     } else if (minutes > 60 && minutes <= 65) {
