@@ -11,11 +11,11 @@ function App() {
   const [myVariables, setMyVariables] = useState(importedVariables)
   const mapRef = useRef(null); // Referência para o mapa
   const [locations, setLocations] = useState([]); // State to hold locations
-  const [zoom, setZoom] = useState(20); // State to hold the zoom level
+  const [zoom, setZoom] = useState(myVariables.zoom); // State to hold the zoom level
 
   useEffect(() => {
     // Inicializa o mapa
-    mapRef.current = L.map('mapa').setView([myVariables.mainLocationLatitude, myVariables.mainLocationLongitude], 15); // Define a centralização do mapa
+    mapRef.current = L.map('mapa').setView([myVariables.mainLocationLatitude, myVariables.mainLocationLongitude], zoom); // Define a centralização do mapa
 
     // Adiciona uma camada de tiles do OpenStreetMap
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
@@ -67,6 +67,18 @@ function App() {
     }
   };
 
+  const handleZoomChange = (e) => {
+    setZoom(Number(e.target.value)); // Update the zoom value
+    const updatedVariables = {
+      ...myVariables,
+      zoom: Number(e.target.value), // Update the zoom value
+    };
+    setMyVariables(updatedVariables); // Update state
+
+    // Save to local storage as a demonstration (to persist the updated values)
+    localStorage.setItem('myVariables', JSON.stringify(updatedVariables));
+  };
+
 
   return (
     <div className="App">
@@ -75,12 +87,12 @@ function App() {
         <input type='text' placeholder='Endereço para centralizar Mapa' /> {/* Corrected here */}
         <button className='salvarLocalButton'>Salvar-Local</button>
         <button className='atualizarButton'>ATUALIZAR</button>
-        <select className='selectZoom' onChange={(e) => setZoom(e.target.value)}>
+        <select className='selectZoom' onChange={handleZoomChange}>
           <option value="14">1</option>
           <option value="15">2</option>
           <option value="16">3</option>
           <option value="17">4</option>
-          <option value="18">4</option>
+          <option value="18">5</option>
         </select>
         <button onClick={centralizarMapa}>Centralizar Mapa</button> {/* Botão para centralizar o mapa */}
 
