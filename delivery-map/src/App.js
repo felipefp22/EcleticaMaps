@@ -53,7 +53,7 @@ function App() {
   const centralizarMapa = () => {
     // Centraliza o mapa na posição especificada
     if (mapRef.current) {
-      mapRef.current.setView([-23.691047472947353, -46.714394001780896], 15);
+      mapRef.current.setView([myVariables.mainLocationLatitude, myVariables.mainLocationLongitude], 15);
     }
   };
 
