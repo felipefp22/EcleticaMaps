@@ -20,10 +20,18 @@ function App() {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
     }).addTo(mapRef.current);
 
-    L.marker([myVariables.mainLocationLatitude, myVariables.mainLocationLongitude], { icon: PizzaFav })
+    // Adicionando marcador principal
+    const pizzaIcon = L.icon({
+      iconUrl: PizzaFav,
+      iconSize: [70, 70],
+      iconAnchor: [20, 40],
+      popupAnchor: [0, -40],
+    });
+    L.marker([myVariables.mainLocationLatitude, myVariables.mainLocationLongitude], { icon: pizzaIcon })
     .addTo(mapRef.current)
     .bindPopup('19 min')
     .openPopup();
+    //------------------------------
 
     return () => {
       mapRef.current.remove(); // Remove o mapa ao desmontar para evitar leaks de memória
@@ -60,28 +68,28 @@ function App() {
 
 export default App;
 
-// L.marker([myVariables.mainLocationLatitude, myVariables.mainLocationLongitude]).addTo(mapRef.current)
-// .bindPopup('19 min')
-// .openPopup()
-// .setIcon(L.divIcon({
-//   html: `
-//     <div style="
-//       position: relative; 
-//       width: 40px; 
-//       height: 40px; 
-//       background-color: rgba(0, 0, 255, 0.589);
-//       background-size: cover;
-//       text-align: center;
-//       line-height: 40px;
-//       font-weight: 800;
-//       color: white;
-//       border-radius: 50px;
+L.marker([myVariables.mainLocationLatitude, myVariables.mainLocationLongitude]).addTo(mapRef.current)
+.bindPopup('19 min')
+.openPopup()
+.setIcon(L.divIcon({
+  html: `
+    <div style="
+      position: relative; 
+      width: 40px; 
+      height: 40px; 
+      background-color: rgba(0, 0, 255, 0.589);
+      background-size: cover;
+      text-align: center;
+      line-height: 40px;
+      font-weight: 800;
+      color: white;
+      border-radius: 50px;
 
-//     ">
-//       1
-//     </div>`, // Aqui você pode substituir "1" pelo número que deseja exibir
-//   iconSize: [40, 40],
-//   iconAnchor: [20, 40],
-//   popupAnchor: [0, -40],
-//   className: '' // Remove a classe padrão
-// }));
+    ">
+      1
+    </div>`, // Aqui você pode substituir "1" pelo número que deseja exibir
+  iconSize: [40, 40],
+  iconAnchor: [20, 40],
+  popupAnchor: [0, -40],
+  className: '' // Remove a classe padrão
+}));
