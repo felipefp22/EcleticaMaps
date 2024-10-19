@@ -11,7 +11,7 @@ function App() {
 
   useEffect(() => {
     // Inicializa o mapa
-    mapRef.current = L.map('mapa').setView([-23.691047472947353, -46.714394001780896], 15); // Define a centralização do mapa
+    mapRef.current = L.map('mapa').setView([myVariables.mainLocationLatitude, myVariables.mainLocationLongitude], 15); // Define a centralização do mapa
 
     // Adiciona uma camada de tiles do OpenStreetMap
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
