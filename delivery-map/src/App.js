@@ -100,7 +100,7 @@ function App() {
       </div>
 
       <div className='barraSuperior2'>
-      <button style={{ width: '35px', height: '35px', backgroundColor: 'blue' }}></button> <h1 style={{ color: 'black' }}>1a5 min </h1>
+      <button style={{ width: '35px', height: '35px', backgroundColor: '#fffb0b' }}></button> <h1 style={{ color: 'black' }}>1a5 min </h1>
       </div>
 
 
