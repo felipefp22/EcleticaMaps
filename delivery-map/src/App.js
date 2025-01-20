@@ -5,7 +5,6 @@ import PizzaFav from './pizza.png'; // Import the image
 
 import importedVariables from './myVariables.json'; // Import the JSON file directly
 import { fetchPontosDeEntrega, fetchPontosDeEntregaTeste, PontosDeEntrega } from './PontosDeEntrega';
-// import { fetchData } from './MySqlQueryDatas';
 
 function App() {
 
@@ -81,6 +80,16 @@ function App() {
     localStorage.setItem('myVariables', JSON.stringify(updatedVariables));
   };
 
+  const [data, setData] = useState([]);
+  const fetchData = async () => {
+    try {
+      const results = await window.electronAPI.queryDatabase('SELECT * FROM your_table');
+      console.log(results);
+      setData(results);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
 
   return (
     <div className="App">
@@ -97,7 +106,7 @@ function App() {
           <option value="18">5 - Zoom</option>
         </select>
         <button className='btn-light' onClick={centralizarMapa}>Centralizar Mapa</button> {/* Botão para centralizar o mapa */}
-        {/* <button onClick={fetchData}>teste</button> */}
+        <button onClick={fetchData}>teste</button>
 
       </div>
 

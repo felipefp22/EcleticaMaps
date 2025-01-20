@@ -96,83 +96,83 @@ export const fetchPontosDeEntregaTeste = async () => {
             lat: -23.689106873992,
             lng: -46.710394001780896,
             label: '1',
-            minutes: 1
+            minutes: 71
         },
         {
             lat: -23.695047472947353,
             lng: -46.708394001780896,
             label: '2',
-            minutes: 6
+            minutes: 61
         },
         {
             lat: -23.689047472947353,
             lng: -46.704394001780896,
             label: '3',
-            minutes: 11
+            minutes: 56
         },
         {
             lat: -23.691047472947353,
             lng: -46.705394001780896,
             label: '4',
-            minutes: 16
+            minutes: 51
         },
         {
             lat: -23.695106873992,
             lng: -46.71266202199305,
             label: '5',
-            minutes: 21
+            minutes: 46
         },
         {
             lat: -23.691047472947353,
             lng: -46.708394001780896,
             label: '6',
-            minutes: 26
+            minutes: 41
         },
         {
             lat: -23.687047472947353,
             lng: -46.702394001780896,
             label: '7',
-            minutes: 31
+            minutes: 36
         },
         {
             lat: -23.695047472947353,
             lng: -46.710394001780896,
             label: '8',
-            minutes: 36
+            minutes: 31
         },        {
             lat: -23.696106873992,
             lng: -46.71166202199305,
             label: '9',
-            minutes: 41
+            minutes: 26
         },
         {
             lat: -23.694047472947353,
             lng: -46.712394001780896,
             label: '10',
-            minutes: 46
+            minutes: 21
         },
         {
             lat: -23.69395047472947353,
             lng: -46.709394001780896,
             label: '11',
-            minutes: 51
+            minutes: 16
         },
         {
             lat: -23.691047472947353,
             lng: -46.711394001780896,
             label: '12',
-            minutes: 56
+            minutes: 11
         },        {
             lat: -23.689106873992,
             lng: -46.70866202199305,
             label: '13',
-            minutes: 61
+            minutes: 6
         },
         {
             lat: -23.692047472947353,
             lng: -46.710394001780896,
             label: '14',
-            minutes: 66
+            minutes: 1
         }
     ];
 }
