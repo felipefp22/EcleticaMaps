@@ -5,6 +5,7 @@ import PizzaFav from './pizza.png'; // Import the image
 
 import importedVariables from './myVariables.json'; // Import the JSON file directly
 import { fetchPontosDeEntrega, fetchPontosDeEntregaTeste, PontosDeEntrega } from './PontosDeEntrega';
+// import { fetchData } from './MySqlQueryDatas';
 
 function App() {
 
@@ -86,8 +87,8 @@ function App() {
 
       <div className='barraSuperior1'>
         <input type='text' placeholder='Endereço para centralizar Mapa' /> {/* Corrected here */}
-        <button className='salvarLocalButton'>Salvar-Local</button>
-        <button className='atualizarButton'>ATUALIZAR</button>
+        <button className='btn-light'>Salvar-Local</button>
+        <button className='btn-light'>ATUALIZAR</button>
         <select className='selectZoom' onChange={handleZoomChange}>
           <option value="14">1 - Zoom</option>
           <option value="15">2 - Zoom</option>
@@ -95,12 +96,28 @@ function App() {
           <option value="17">4 - Zoom</option>
           <option value="18">5 - Zoom</option>
         </select>
-        <button onClick={centralizarMapa}>Centralizar Mapa</button> {/* Botão para centralizar o mapa */}
+        <button className='btn-light' onClick={centralizarMapa}>Centralizar Mapa</button> {/* Botão para centralizar o mapa */}
+        {/* <button onClick={fetchData}>teste</button> */}
 
       </div>
 
       <div className='barraSuperior2'>
-      <button style={{ width: '35px', height: '35px', backgroundColor: '#fffb0b' }}></button> <h1 style={{ color: 'black' }}>1a5 min </h1>
+        <button style={{ width: '35px', height: '35px', backgroundColor: '#fffb0b' }}></button> <h4 style={{ color: 'black' }}>- 1a5 min </h4>
+        <button style={{ width: '35px', height: '35px', backgroundColor: '#a1ff0b' }}></button> <h4 style={{ color: 'black' }}>- 6a10 min </h4>
+ 
+        <button style={{ width: '35px', height: '35px', backgroundColor: '#0c97e7' }}></button> <h4 style={{ color: 'black' }}>- 11a20 min </h4>
+ 
+        <button style={{ width: '35px', height: '35px', backgroundColor: '#5715f1' }}></button> <h4 style={{ color: 'black' }}>- 21a30 min </h4>
+ 
+        <button style={{ width: '35px', height: '35px', backgroundColor: '#eb2778' }}></button> <h4 style={{ color: 'black' }}>- 31a40 min </h4>
+ 
+        <button style={{ width: '35px', height: '35px', backgroundColor: '#ec5b06' }}></button> <h4 style={{ color: 'black' }}>- 41a50 min </h4>
+ 
+        <button style={{ width: '35px', height: '35px', backgroundColor: '#e40e0e' }}></button> <h4 style={{ color: 'black' }}>- 51a60 min </h4>
+
+        <button style={{ width: '35px', height: '35px', backgroundColor: '#e40e0e', border: '4px solid #f36818' }}></button> <h4 style={{ color: 'black' }}>- 61a70 min </h4>
+        <button style={{ width: '35px', height: '35px', backgroundColor: '#e40e0e', border: '10px solid #f36818' }}></button> <h4 style={{ color: 'black' }}>- 70+ min </h4>
+
       </div>
 
 

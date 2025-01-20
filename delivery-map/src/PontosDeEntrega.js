@@ -37,38 +37,56 @@ export const PontosDeEntrega = ({ map, lat, lng, label, minutes }) => {
 function selectMarkerColor(minutes) {
     if (minutes <= 5) {
         return '#fffb0b';
+
+
     } else if (minutes > 5 && minutes <= 10) {
         return '#a1ff0b';
+
+
     } else if (minutes > 10 && minutes <= 15) {
         return '#0c97e7';
     } else if (minutes > 15 && minutes <= 20) {
-        return '#0c6be7';
+        // return '#0c6be7';
+        return '#0c97e7';
+
 
     } else if (minutes > 20 && minutes <= 25) {
-        return '#0e1dfc';
+        return '#5715f1';
+        // return '#0e1dfc';
     } else if (minutes > 25 && minutes <= 30) {
         return '#5715f1';
+
+
     } else if (minutes > 30 && minutes <= 35) {
         return '#eb2778';
     } else if (minutes > 35 && minutes <= 40) {
-        return '#b6118d';
+        // return '#b6118d';
+        return '#eb2778';
+
 
     } else if (minutes > 40 && minutes <= 45) {
         return '#ec5b06';
     } else if (minutes > 45 && minutes <= 50) {
-        return '#e42e0e';
+        // return '#e42e0e';
+        return '#ec5b06';
+
+
+
     } else if (minutes > 50 && minutes <= 55) {
         return '#e40e0e';
     } else if (minutes > 55 && minutes <= 60) {
-        return '#e40e0e; border: 5px solid #f36818';
+        return '#e40e0e';
+
 
 
     } else if (minutes > 60 && minutes <= 65) {
-        return '#e40e0e; border: 7px solid #f36818'
+        return '#e40e0e; border: 4px solid #f36818'
     } else if (minutes > 65 && minutes <= 70) {
-        return '#e40e0e; border: 11px solid #f36818'
+        return '#e40e0e; border: 4px solid #f36818'
+
+
     } else if (minutes > 70) {
-        return '#e40e0e; border: 14px solid #f36818'
+        return '#e40e0e; border: 10px solid #f36818'
     }
 }
 
