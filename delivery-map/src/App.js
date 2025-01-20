@@ -82,8 +82,10 @@ function App() {
 
   const [data, setData] = useState([]);
   const fetchData = async () => {
+    console.log(window.electronAPI); 
     try {
-      const results = await window.electronAPI.queryDatabase('SELECT * FROM your_table');
+      // Ensure you're calling the correct method
+      const results = await window.electronAPI.queryDatabase('SELECT * FROM pedidos');
       console.log(results);
       setData(results);
     } catch (error) {

@@ -1,13 +1,13 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
-const mysql = require('mysql');
+const mysql = require('mysql2');
 const path = require('path');
 
 let mainWindow;
 
 app.on('ready', () => {
   mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1280,
+    height: 720,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'), // Secure bridge
       contextIsolation: true,
@@ -26,6 +26,7 @@ app.on('ready', () => {
 });
 
 ipcMain.handle('query-database', async (event, query) => {
+  console.log('aquiii');
   const connection = mysql.createConnection({
     host: 'localhost',        // O host onde o MySQL está rodando
     user: 'root',             // Usuário do MySQL
@@ -41,6 +42,8 @@ ipcMain.handle('query-database', async (event, query) => {
         if (err) {
           reject('Query error: ' + err);
         } else {
+          console.log('results:', results);
+
           resolve(results);
         }
         connection.end();
