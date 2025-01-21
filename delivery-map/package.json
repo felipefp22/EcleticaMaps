@@ -12,11 +12,46 @@
     "react-scripts": "5.0.1",
     "web-vitals": "^4.2.3"
   },
+  "build": {
+    "appId": "com.yourcompany.delivery-map",
+    "productName": "DeliveryMap",
+    "files": [
+      "build/**/*",
+      "main.js",
+      "package.json",
+      "preload.js"
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": [
+        "portable"
+      ],
+      "icon": "icon.ico"
+    },
+    "mac": {
+      "icon": "icon.icns"
+    },
+    "linux": {
+      "icon": "icon.png"
+    }
+  },
+  "devDependencies": {
+    "electron": "^34.0.0",
+    "electron-builder": "^24.1.0",
+    "electron-packager": "^17.1.2",
+    "concurrently": "^9.1.2"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "copy-main": "cp main.js build/electron.js", 
+    "copy-preload": "cp preload.js build/", 
     "electron": "electron ./main.js",
-    "electron-dev": "concurrently \"npm start\" \"npm run electron\""
+    "electron-dev": "concurrently \"npm start\" \"npm run electron\"",
+    "pack": "electron-builder --win --x64",
+    "dist": "\"cp main.js build/electron.js\" \"cp preload.js build/\"  electron-builder "
   },
   "eslintConfig": {
     "extends": [
@@ -35,9 +70,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "concurrently": "^9.1.2",
-    "electron": "^34.0.0"
   }
 }

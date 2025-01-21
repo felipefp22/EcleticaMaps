@@ -19,7 +19,7 @@ app.on('ready', () => {
   // Load your React app
   mainWindow.loadURL('http://localhost:3000'); // For development
   // Uncomment this for production (after building React)
-  // mainWindow.loadFile(path.join(__dirname, 'build', 'index.html'));
+  //mainWindow.loadFile(path.join(__dirname, 'build', 'index.html'));
 
   mainWindow.on('closed', () => {
     mainWindow = null;

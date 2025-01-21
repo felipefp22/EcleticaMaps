@@ -150,15 +150,23 @@ function App() {
 
   }
 
+  const [isModalVisible, setModalVisible] = useState(false); // State to control the modal visibility
+  const handleOpenModal = () => {
+
+    if (newLatRestaurant && newLngRestaurant) {
+
+      setModalVisible(true);
+    }
+  };
+
   return (
     <div className="App">
 
       <div className='barraSuperior1'>
-        <button className='btn-light' onClick={saveNewRestaurantLocation}>Salvar-Local</button>
+        <button className='btn-light' onClick={handleOpenModal}>Salvar-Local</button>
 
         <input style={{ maxWidth: "170px" }} value={newLatRestaurant || ""} type="text" onChange={(e) => setNewLatRestaurant(e.target.value)} placeholder="Latitude" />
         <input style={{ maxWidth: "170px" }} value={newLngRestaurant || ""} type="text" onChange={(e) => setNewLngRestaurant(e.target.value)} placeholder="Longitude" />
-
         <h4>|</h4>
         <h4></h4>
         <h4></h4>
@@ -167,7 +175,6 @@ function App() {
         <h4></h4>
         <h4></h4>
         <h4></h4>
-
 
         <select className='selectZoom' onChange={handleZoomChange}>
           <option value="14">1 - Zoom</option>
@@ -204,7 +211,21 @@ function App() {
 
       <div className='mapa' id='mapa' style={{ height: '87vh', width: '99vw' }}></div> {/* Div for the map */}
 
+      {isModalVisible && (
+        <div className="popup-modal">
+          <div className="popup-content">
+            <h3>Tem certeza em salvar? Isto pode desconfigurar o MAPA</h3>
+            <h4>Latitude: {newLatRestaurant}</h4>
+            <h4>Longitude: {newLngRestaurant}</h4>
+            <div className="popup-actions">
+              <button className="btn-confirm" onClick={saveNewRestaurantLocation}>OK</button>
+              <button className="btn-cancel" onClick={() => setModalVisible(false)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
+
   );
 }
 
