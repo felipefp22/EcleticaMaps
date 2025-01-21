@@ -4,7 +4,7 @@ import L from 'leaflet'; // Import Leaflet
 import PizzaFav from './pizza.png'; // Import the image
 
 import importedVariables from './myVariables.json'; // Import the JSON file directly
-import {  PontosDeEntrega } from './PontosDeEntrega';
+import { PontosDeEntrega } from './PontosDeEntrega';
 
 function App() {
 
@@ -16,7 +16,7 @@ function App() {
 
 
   useEffect(() => {
-    
+
     // Inicializa o mapa
     mapRef.current = L.map('mapa').setView([myVariables.mainLocationLatitude, myVariables.mainLocationLongitude], zoom); // Define a centralização do mapa
 
@@ -39,7 +39,7 @@ function App() {
       .openPopup();
     //------------------------------
     // Marcadores lugares de entrega
-    
+
     markersRef.current = L.layerGroup().addTo(mapRef.current);
 
     fetchDataToLocation();
@@ -54,7 +54,7 @@ function App() {
 
   useEffect(() => {
     updateMarkersPontosDeEntrega();
-  }, [locations]); 
+  }, [locations]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -76,7 +76,7 @@ function App() {
         lat: location.lat,
         lng: location.lng,
         label: location.id,
-        minutes: Math.round((new Date() - location.data_pedido) / 60000) 
+        minutes: Math.round((new Date() - location.data_pedido) / 60000)
       });
     });
   };
@@ -113,12 +113,35 @@ function App() {
     }
   };
 
+  const [newLatRestaurant, setNewLatRestaurant] = useState(null);
+  const [newLngRestaurant, setNewLngRestaurant] = useState(null);
+
+  function saveNewRestaurantLocation() {
+    // Save the new restaurant location
+    if (newLatRestaurant && newLngRestaurant) {
+
+      const updatedVariables = {
+        ...myVariables,
+        mainLocationLatitude: newLatRestaurant,
+        mainLocationLongitude: newLngRestaurant,
+      };
+
+      setNewLatRestaurant(null);
+      setNewLngRestaurant(null);
+      window.location.reload();
+    }
+
+  }
+
   return (
     <div className="App">
 
       <div className='barraSuperior1'>
-        <input type='text' placeholder='Endereço para centralizar Mapa' /> {/* Corrected here */}
-        <button className='btn-light'>Salvar-Local</button>
+        <input style={{maxWidth: "170px" }} value={newLatRestaurant || ""} type="text" onChange={(e) => setNewLatRestaurant(e.target.value)} placeholder="Latitude"/>
+        <input style={{maxWidth: "170px" }} value={newLngRestaurant || ""} type="text" onChange={(e) => setNewLngRestaurant(e.target.value)} placeholder="Longitude"/>
+
+        <button className='btn-light' onClick={saveNewRestaurantLocation}>Salvar-Local</button
+        >
         <button onClick={fetchDataToLocation} className='btn-light'>ATUALIZAR</button>
         <select className='selectZoom' onChange={handleZoomChange}>
           <option value="14">1 - Zoom</option>
@@ -134,15 +157,15 @@ function App() {
       <div className='barraSuperior2'>
         <button style={{ width: '35px', height: '35px', backgroundColor: '#fffb0b' }}></button> <h4 style={{ color: 'black' }}> 1a5 min </h4>
         <button style={{ width: '35px', height: '35px', backgroundColor: '#a1ff0b' }}></button> <h4 style={{ color: 'black' }}> 6a10 min </h4>
- 
+
         <button style={{ width: '35px', height: '35px', backgroundColor: '#0c97e7' }}></button> <h4 style={{ color: 'black' }}> 11a20 min </h4>
- 
+
         <button style={{ width: '35px', height: '35px', backgroundColor: '#5715f1' }}></button> <h4 style={{ color: 'black' }}> 21a30 min </h4>
- 
+
         <button style={{ width: '35px', height: '35px', backgroundColor: '#eb2778' }}></button> <h4 style={{ color: 'black' }}> 31a40 min </h4>
- 
+
         <button style={{ width: '35px', height: '35px', backgroundColor: '#ec5b06' }}></button> <h4 style={{ color: 'black' }}> 41a50 min </h4>
- 
+
         <button style={{ width: '35px', height: '35px', backgroundColor: '#e40e0e' }}></button> <h4 style={{ color: 'black' }}> 51a60 min </h4>
 
         <button style={{ width: '35px', height: '35px', backgroundColor: '#e40e0e', border: '4px solid #f36818' }}></button> <h4 style={{ color: 'black' }}> 61a70 min </h4>
