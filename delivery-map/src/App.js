@@ -219,7 +219,7 @@ function App() {
             <h4>Longitude: {newLngRestaurant}</h4>
             <div className="popup-actions">
               <button className="btn-confirm" onClick={saveNewRestaurantLocation}>OK</button>
-              <button className="btn-cancel" onClick={() => setModalVisible(false)}>Cancel</button>
+              <button className="btn-cancel" onClick={() => {setModalVisible(false); setNewLatRestaurant(null); setNewLngRestaurant(null);}}>Cancel</button>
             </div>
           </div>
         </div>

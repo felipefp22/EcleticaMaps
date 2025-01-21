@@ -3,10 +3,15 @@ const mysql = require('mysql2');
 const path = require('path');
 const fs = require('fs');
 
-let mainWindow;
+let win;
+
+let isDev;
+(async () => {
+  isDev = (await import('electron-is-dev')).default;
+})();
 
 app.on('ready', () => {
-  mainWindow = new BrowserWindow({
+  win = new BrowserWindow({
     width: 1100,
     height: 650,
     webPreferences: {
@@ -17,11 +22,11 @@ app.on('ready', () => {
   });
 
   // Load your React app
-  mainWindow.loadURL('http://localhost:3000'); // For development
+  win.loadURL(isDev? 'http://localhost:3000' : `file://${path.join(__dirname, "../build/index.html")}`); // For development
   // Uncomment this for production (after building React)
   //mainWindow.loadFile(path.join(__dirname, 'build', 'index.html'));
 
-  mainWindow.on('closed', () => {
+  win.on('closed', () => {
     mainWindow = null;
   });
 });

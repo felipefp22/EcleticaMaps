@@ -2,53 +2,50 @@
   "name": "delivery-map",
   "version": "0.1.0",
   "private": true,
+  "main": "public/electron.js",
+  "homepage": "./",
+  "author": {
+    "name": "Felipe de Paula",
+    "email": "felipefp2@gmail.com"
+  },
+  "description": "Mapa de Delivery conversa com ecletica",
   "dependencies": {
     "cra-template": "1.2.0",
+    "electron-is-dev": "^3.0.1",
     "leaflet": "^1.9.4",
     "mysql": "^2.18.1",
     "mysql2": "^3.12.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
     "react-scripts": "5.0.1",
     "web-vitals": "^4.2.3"
   },
   "build": {
-    "appId": "com.yourcompany.delivery-map",
+    "appId": "com.felipedev.delivery-map",
     "productName": "DeliveryMap",
     "files": [
       "build/**/*",
-      "main.js",
-      "package.json",
-      "preload.js"
+      "node_modules/**/*"
     ],
     "directories": {
-      "output": "dist"
-    },
-    "win": {
-      "target": [
-        "portable"
-      ],
-      "icon": "icon.ico"
-    },
-    "mac": {
-      "icon": "icon.icns"
-    },
-    "linux": {
-      "icon": "icon.png"
+      "buildResources": "public"
     }
   },
   "devDependencies": {
+    "concurrently": "^9.1.2",
     "electron": "^34.0.0",
     "electron-builder": "^24.1.0",
-    "electron-packager": "^17.1.2",
-    "concurrently": "^9.1.2"
+    "electron-packager": "^17.1.2"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "copy-main": "cp main.js build/electron.js", 
-    "copy-preload": "cp preload.js build/", 
-    "electron": "electron ./main.js",
+    "copy-main": "cp main.js build/electron.js",
+    "copy-preload": "cp preload.js build/",
+    "electron": "electron .",
+    "electron:package:win": "npm run build && electron-builder -w -c.extraMetadata.main=build/electron.js",
+    "electron:package:mac": "npm run build && electron-builder -m -c.extraMetadata.main=build/electron.js",
+    "electron:package:linux": "npm run build && electron-builder -l -c.extraMetadata.main=build/electron.js",
     "electron-dev": "concurrently \"npm start\" \"npm run electron\"",
     "pack": "electron-builder --win --x64",
     "dist": "\"cp main.js build/electron.js\" \"cp preload.js build/\"  electron-builder "
