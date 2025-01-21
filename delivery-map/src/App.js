@@ -4,7 +4,7 @@ import L from 'leaflet'; // Import Leaflet
 import PizzaFav from './pizza.png'; // Import the image
 
 import importedVariables from './myVariables.json'; // Import the JSON file directly
-import { fetchPontosDeEntrega, fetchPontosDeEntregaTeste, PontosDeEntrega } from './PontosDeEntrega';
+import { fetchPontosDeEntregaTeste, PontosDeEntrega } from './PontosDeEntrega';
 
 function App() {
 
@@ -12,6 +12,9 @@ function App() {
   const mapRef = useRef(null); // Referência para o mapa
   const [locations, setLocations] = useState([]); // State to hold locations
   const [zoom, setZoom] = useState(myVariables.zoom); // State to hold the zoom level
+  const [update, setUpdate] = useState(false); // State to force a re-render
+  const markersRef = useRef(null); // Reference to manage markers
+
 
   useEffect(() => {
     // Inicializa o mapa
@@ -35,31 +38,60 @@ function App() {
       .bindPopup('RESTAURANTE')
       .openPopup();
     //------------------------------
+    // Marcadores lugares de entrega
+    markersRef.current = L.layerGroup().addTo(mapRef.current);
+    updateMarkersPontosDeEntrega(); // Update state with fetched data
 
-    // fetchPontosDeEntrega()
-    fetchData()
-      .then(data => {
-        setLocations(data); // Update state with fetched data
-      })
-      .catch(error => console.error('Error fetching locations:', error));
+    // fetchData()
+    //   .then(data => {
+    //     setLocations(data);
+    //   })
+    //   .catch(error => console.error('Error fetching locations:', error));
+    //------------------------------
+
 
     return () => {
       mapRef.current.remove(); // Remove o mapa ao desmontar para evitar leaks de memória
     };
   }, [myVariables]);
 
-  useEffect(() => {
-    // Add markers for each location
+  // useEffect(() => {
+  //   // Add markers for each location
+  //   locations.forEach(location => {
+  //     PontosDeEntrega({
+  //       map: mapRef.current,
+  //       lat: location.lat,
+  //       lng: location.lng,
+  //       label: location.id,
+  //       minutes: Math.round((new Date() - location.data_pedido) / 60000) // Replace with your desired label
+  //       // minutes: Math.round((new Date - location.data_pedido) / 60000)
+  //     });
+  //   });
+  //   setUpdate(false); // Force a re-render
+  // }, [locations, update]);
+
+  const updateMarkersPontosDeEntrega = () => {
+    fetchData()
+      .then(data => {
+        setLocations(data);
+      })
+      .catch(error => console.error('Error fetching locations:', error));    
+
+    if (markersRef.current) {
+      markersRef.current.clearLayers(); // Clear existing markers
+    }
+
     locations.forEach(location => {
       PontosDeEntrega({
         map: mapRef.current,
         lat: location.lat,
         lng: location.lng,
         label: location.id,
-        minutes: Math.round((new Date - location.data_pedido) / 60000) // Replace with your desired label
+        minutes: Math.round((new Date() - location.data_pedido) / 60000) // Replace with your desired label
+        // minutes: Math.round((new Date - location.data_pedido) / 60000)
       });
     });
-  }, [locations]);
+  };
 
   const centralizarMapa = () => {
     // Centraliza o mapa na posição especificada
@@ -97,7 +129,7 @@ function App() {
       <div className='barraSuperior1'>
         <input type='text' placeholder='Endereço para centralizar Mapa' /> {/* Corrected here */}
         <button className='btn-light'>Salvar-Local</button>
-        <button onClick={fetchData} className='btn-light'>ATUALIZAR</button>
+        <button onClick={updateMarkersPontosDeEntrega} className='btn-light'>ATUALIZAR</button>
         <select className='selectZoom' onChange={handleZoomChange}>
           <option value="14">1 - Zoom</option>
           <option value="15">2 - Zoom</option>

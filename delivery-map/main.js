@@ -42,7 +42,6 @@ ipcMain.handle('query-database', async (event, query) => {
         if (err) {
           reject('Query error: ' + err);
         } else {
-          console.log('results:', results);
 
           resolve(results);
         }
