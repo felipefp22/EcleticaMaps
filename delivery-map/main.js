@@ -1,6 +1,7 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const mysql = require('mysql2');
 const path = require('path');
+const fs = require('fs');
 
 let mainWindow;
 
@@ -23,6 +24,39 @@ app.on('ready', () => {
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
+});
+
+const dataFilePath = path.join(__dirname, 'src', 'myVariables.json');
+
+function loadSettings() {
+  try {
+    const data = fs.readFileSync(dataFilePath, 'utf-8');
+    return JSON.parse(data);
+  } catch (err) {
+    console.log('Error reading settings:', err);
+    return {}; // Return default settings if no file found
+  }
+}
+
+// Function to save settings
+function saveSettings(settings) {
+  try {
+    fs.writeFileSync(dataFilePath, JSON.stringify(settings, null, 2)); // Pretty print JSON
+    console.log('Settings saved successfully!');
+  } catch (err) {
+    console.log('Error saving settings:', err);
+  }
+}
+
+// Handle saving settings
+ipcMain.handle('save-settings', (event, settings) => {
+  saveSettings(settings);
+  return 'Settings saved successfully!';
+});
+
+// Handle loading settings
+ipcMain.handle('load-settings', () => {
+  return loadSettings();
 });
 
 ipcMain.handle('query-database', async (event, query) => {

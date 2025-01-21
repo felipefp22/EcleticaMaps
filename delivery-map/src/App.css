@@ -3,7 +3,7 @@
 .barraSuperior1 {
   background-color: rgb(148, 56, 235); /* Vibrant purple */
   padding: 10px;
-  height: 4vh; /* Slightly taller for better spacing */
+  height: 5vh; /* Slightly taller for better spacing */
   border: 1px solid black;
   display: flex;
   align-items: center;

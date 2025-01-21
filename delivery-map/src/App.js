@@ -7,6 +7,7 @@ import importedVariables from './myVariables.json'; // Import the JSON file dire
 import { PontosDeEntrega } from './PontosDeEntrega';
 
 function App() {
+  const [settings, setSettings] = useState({});
 
   const [myVariables, setMyVariables] = useState(importedVariables)
   const mapRef = useRef(null); // Referência para o mapa
@@ -53,6 +54,13 @@ function App() {
   }, [myVariables]);
 
   useEffect(() => {
+    // Load settings when the component mounts
+    window.electronAPI.loadSettings().then((loadedSettings) => {
+      setSettings(loadedSettings);
+    });
+  }, []);
+
+  useEffect(() => {
     updateMarkersPontosDeEntrega();
   }, [locations]);
 
@@ -90,14 +98,18 @@ function App() {
 
   const handleZoomChange = (e) => {
     setZoom(Number(e.target.value)); // Update the zoom value
-    const updatedVariables = {
-      ...myVariables,
-      zoom: Number(e.target.value), // Update the zoom value
+
+    const updatedSettings = {
+      ...settings,
+      zoom: Number(e.target.value),
     };
-    setMyVariables(updatedVariables); // Update state
+
+    window.electronAPI.saveSettings(updatedSettings).then((response) => {
+      setSettings(updatedSettings); // Update state with the new settings
+    });
 
     // Save to local storage as a demonstration (to persist the updated values)
-    localStorage.setItem('myVariables', JSON.stringify(updatedVariables));
+    // localStorage.setItem('myVariables', JSON.stringify(updatedVariables));
   };
 
   function fetchDataToLocation() {
@@ -120,11 +132,16 @@ function App() {
     // Save the new restaurant location
     if (newLatRestaurant && newLngRestaurant) {
 
-      const updatedVariables = {
-        ...myVariables,
+      const updatedSettings = {
+        ...settings,
         mainLocationLatitude: newLatRestaurant,
         mainLocationLongitude: newLngRestaurant,
       };
+
+      // Save the updated settings
+      window.electronAPI.saveSettings(updatedSettings).then((response) => {
+        setSettings(updatedSettings); // Update state with the new settings
+      });
 
       setNewLatRestaurant(null);
       setNewLngRestaurant(null);
@@ -137,12 +154,21 @@ function App() {
     <div className="App">
 
       <div className='barraSuperior1'>
-        <input style={{maxWidth: "170px" }} value={newLatRestaurant || ""} type="text" onChange={(e) => setNewLatRestaurant(e.target.value)} placeholder="Latitude"/>
-        <input style={{maxWidth: "170px" }} value={newLngRestaurant || ""} type="text" onChange={(e) => setNewLngRestaurant(e.target.value)} placeholder="Longitude"/>
+        <button className='btn-light' onClick={saveNewRestaurantLocation}>Salvar-Local</button>
 
-        <button className='btn-light' onClick={saveNewRestaurantLocation}>Salvar-Local</button
-        >
-        <button onClick={fetchDataToLocation} className='btn-light'>ATUALIZAR</button>
+        <input style={{ maxWidth: "170px" }} value={newLatRestaurant || ""} type="text" onChange={(e) => setNewLatRestaurant(e.target.value)} placeholder="Latitude" />
+        <input style={{ maxWidth: "170px" }} value={newLngRestaurant || ""} type="text" onChange={(e) => setNewLngRestaurant(e.target.value)} placeholder="Longitude" />
+
+        <h4>|</h4>
+        <h4></h4>
+        <h4></h4>
+        <h4></h4>
+        <h4></h4>
+        <h4></h4>
+        <h4></h4>
+        <h4></h4>
+
+
         <select className='selectZoom' onChange={handleZoomChange}>
           <option value="14">1 - Zoom</option>
           <option value="15">2 - Zoom</option>
@@ -150,8 +176,10 @@ function App() {
           <option value="17">4 - Zoom</option>
           <option value="18">5 - Zoom</option>
         </select>
+
         <button className='btn-light' onClick={centralizarMapa}>Centralizar Mapa</button> {/* Botão para centralizar o mapa */}
 
+        <button onClick={fetchDataToLocation} className='btn-light'>ATUALIZAR</button>
       </div>
 
       <div className='barraSuperior2'>
