@@ -4,7 +4,7 @@ import L from 'leaflet'; // Import Leaflet
 import PizzaFav from './pizza.png'; // Import the image
 
 import importedVariables from './myVariables.json'; // Import the JSON file directly
-import { fetchPontosDeEntregaTeste, PontosDeEntrega } from './PontosDeEntrega';
+import {  PontosDeEntrega } from './PontosDeEntrega';
 
 function App() {
 
@@ -12,7 +12,6 @@ function App() {
   const mapRef = useRef(null); // Referência para o mapa
   const [locations, setLocations] = useState([]); // State to hold locations
   const [zoom, setZoom] = useState(myVariables.zoom); // State to hold the zoom level
-  const [update, setUpdate] = useState(false); // State to force a re-render
   const markersRef = useRef(null); // Reference to manage markers
 
 
@@ -42,11 +41,6 @@ function App() {
     markersRef.current = L.layerGroup().addTo(mapRef.current);
     updateMarkersPontosDeEntrega(); // Update state with fetched data
 
-    // fetchData()
-    //   .then(data => {
-    //     setLocations(data);
-    //   })
-    //   .catch(error => console.error('Error fetching locations:', error));
     //------------------------------
 
 
@@ -55,20 +49,6 @@ function App() {
     };
   }, [myVariables]);
 
-  // useEffect(() => {
-  //   // Add markers for each location
-  //   locations.forEach(location => {
-  //     PontosDeEntrega({
-  //       map: mapRef.current,
-  //       lat: location.lat,
-  //       lng: location.lng,
-  //       label: location.id,
-  //       minutes: Math.round((new Date() - location.data_pedido) / 60000) // Replace with your desired label
-  //       // minutes: Math.round((new Date - location.data_pedido) / 60000)
-  //     });
-  //   });
-  //   setUpdate(false); // Force a re-render
-  // }, [locations, update]);
 
   const updateMarkersPontosDeEntrega = () => {
     fetchData()
@@ -87,8 +67,7 @@ function App() {
         lat: location.lat,
         lng: location.lng,
         label: location.id,
-        minutes: Math.round((new Date() - location.data_pedido) / 60000) // Replace with your desired label
-        // minutes: Math.round((new Date - location.data_pedido) / 60000)
+        minutes: Math.round((new Date() - location.data_pedido) / 60000) 
       });
     });
   };
