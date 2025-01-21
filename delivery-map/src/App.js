@@ -56,7 +56,7 @@ function App() {
         lat: location.lat,
         lng: location.lng,
         label: location.id,
-        minutes: location.minutes // Replace with your desired label
+        minutes: Math.round((new Date - location.data_pedido) / 60000) // Replace with your desired label
       });
     });
   }, [locations]);
