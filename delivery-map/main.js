@@ -26,7 +26,6 @@ app.on('ready', () => {
 });
 
 ipcMain.handle('query-database', async (event, query) => {
-  console.log('aquiii');
   const connection = mysql.createConnection({
     host: 'localhost',        // O host onde o MySQL está rodando
     user: 'root',             // Usuário do MySQL

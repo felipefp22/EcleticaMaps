@@ -16,6 +16,7 @@ function App() {
 
 
   useEffect(() => {
+    
     // Inicializa o mapa
     mapRef.current = L.map('mapa').setView([myVariables.mainLocationLatitude, myVariables.mainLocationLongitude], zoom); // Define a centralização do mapa
 
@@ -38,8 +39,10 @@ function App() {
       .openPopup();
     //------------------------------
     // Marcadores lugares de entrega
+    
     markersRef.current = L.layerGroup().addTo(mapRef.current);
-    updateMarkersPontosDeEntrega(); // Update state with fetched data
+
+    fetchDataToLocation();
 
     //------------------------------
 
@@ -49,13 +52,19 @@ function App() {
     };
   }, [myVariables]);
 
+  useEffect(() => {
+    updateMarkersPontosDeEntrega();
+  }, [locations]); 
 
-  const updateMarkersPontosDeEntrega = () => {
-    fetchData()
-      .then(data => {
-        setLocations(data);
-      })
-      .catch(error => console.error('Error fetching locations:', error));    
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchDataToLocation();
+    }, 60000); // 60 seconds
+
+    return () => clearInterval(interval); // Cleanup interval on component unmount
+  }, []);
+
+  function updateMarkersPontosDeEntrega() {
 
     if (markersRef.current) {
       markersRef.current.clearLayers(); // Clear existing markers
@@ -91,12 +100,14 @@ function App() {
     localStorage.setItem('myVariables', JSON.stringify(updatedVariables));
   };
 
-  const [data, setData] = useState([]);
-  const fetchData = async () => {
+  function fetchDataToLocation() {
     try {
-      const results = await window.electronAPI.queryDatabase('SELECT * FROM pedidos');
+      const results = window.electronAPI.queryDatabase('SELECT * FROM pedidos');
 
-      return results;
+      results.then((data) => {
+        setLocations(data);
+      });
+
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -108,7 +119,7 @@ function App() {
       <div className='barraSuperior1'>
         <input type='text' placeholder='Endereço para centralizar Mapa' /> {/* Corrected here */}
         <button className='btn-light'>Salvar-Local</button>
-        <button onClick={updateMarkersPontosDeEntrega} className='btn-light'>ATUALIZAR</button>
+        <button onClick={fetchDataToLocation} className='btn-light'>ATUALIZAR</button>
         <select className='selectZoom' onChange={handleZoomChange}>
           <option value="14">1 - Zoom</option>
           <option value="15">2 - Zoom</option>
