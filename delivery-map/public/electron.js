@@ -1,3 +1,4 @@
+
 const { app, BrowserWindow, ipcMain } = require('electron');
 const mysql = require('mysql2');
 const path = require('path');
@@ -6,11 +7,13 @@ const fs = require('fs');
 let win;
 
 let isDev;
-(async () => {
-  isDev = (await import('electron-is-dev')).default;
-})();
+async function initializeDevMode() {
+  isDev = await import('electron-is-dev');
 
-app.on('ready', () => {
+  console.log('Charged if is dev, is dev? ', isDev);
+}
+
+app.on('ready', async () => {
   win = new BrowserWindow({
     width: 1100,
     height: 650,
@@ -20,18 +23,18 @@ app.on('ready', () => {
       enableRemoteModule: false,
     },
   });
-
+  await initializeDevMode();
   // Load your React app
-  win.loadURL(isDev? 'http://localhost:3000' : `file://${path.join(__dirname, "../build/index.html")}`); // For development
-  // Uncomment this for production (after building React)
-  //mainWindow.loadFile(path.join(__dirname, 'build', 'index.html'));
+  win.loadURL(isDev? 'http://localhost:3000' : `file://${path.join(__dirname, "../build/index.html")}`); 
+  console.log('Running in development mode:', isDev);
+
 
   win.on('closed', () => {
     mainWindow = null;
   });
 });
 
-const dataFilePath = path.join(__dirname, 'src', 'myVariables.json');
+const dataFilePath = path.join(__dirname, './../src', 'myVariables.json');
 
 function loadSettings() {
   try {
@@ -56,6 +59,7 @@ function saveSettings(settings) {
 // Handle saving settings
 ipcMain.handle('save-settings', (event, settings) => {
   saveSettings(settings);
+  console.log('Settings saved successfully! '+ settings);
   return 'Settings saved successfully!';
 });
 
