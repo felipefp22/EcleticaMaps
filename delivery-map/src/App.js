@@ -67,7 +67,7 @@ function App() {
   useEffect(() => {
     const interval = setInterval(() => {
       fetchDataToLocation();
-    }, 60000); // 60 seconds
+    }, 20000); // 20 seconds
 
     return () => clearInterval(interval); // Cleanup interval on component unmount
   }, []);
