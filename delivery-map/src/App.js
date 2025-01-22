@@ -9,56 +9,67 @@ import { PontosDeEntrega } from './PontosDeEntrega';
 function App() {
   const [settings, setSettings] = useState({});
 
-  const [myVariables, setMyVariables] = useState(importedVariables)
+  const [myVariables, setMyVariables] = useState(null)
   const mapRef = useRef(null); // Referência para o mapa
   const [locations, setLocations] = useState([]); // State to hold locations
-  const [zoom, setZoom] = useState(myVariables.zoom); // State to hold the zoom level
+  const [zoom, setZoom] = useState(null); // State to hold the zoom level
   const markersRef = useRef(null); // Reference to manage markers
 
 
   useEffect(() => {
 
-    // Inicializa o mapa
-    mapRef.current = L.map('mapa').setView([myVariables.mainLocationLatitude, myVariables.mainLocationLongitude], zoom); // Define a centralização do mapa
+    if (myVariables && zoom && myVariables.mainLocationLatitude && myVariables.mainLocationLongitude) {
+      console.log('myVariables:', myVariables);
+      // Inicializa o mapa
+      mapRef.current = L.map('mapa').setView([myVariables.mainLocationLatitude, myVariables.mainLocationLongitude], zoom); // Define a centralização do mapa
 
-    // Adiciona uma camada de tiles do OpenStreetMap
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '&copy; OpenStreetMap contributors',
-    }).addTo(mapRef.current);
+      // Adiciona uma camada de tiles do OpenStreetMap
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; OpenStreetMap contributors',
+      }).addTo(mapRef.current);
 
-    // Adicionando marcador principal
-    const pizzaIcon = L.icon({
-      iconUrl: PizzaFav,
-      iconSize: [70, 70],
-      iconAnchor: [20, 40],
-      popupAnchor: [0, -40],
-    });
-    L.marker([myVariables.mainLocationLatitude, myVariables.mainLocationLongitude], { icon: pizzaIcon })
-      .addTo(mapRef.current)
-      .bindPopup('RESTAURANTE')
-      .openPopup();
-    //------------------------------
-    // Marcadores lugares de entrega
+      // Adicionando marcador principal
+      const pizzaIcon = L.icon({
+        iconUrl: PizzaFav,
+        iconSize: [70, 70],
+        iconAnchor: [20, 40],
+        popupAnchor: [0, -40],
+      });
+      L.marker([myVariables.mainLocationLatitude, myVariables.mainLocationLongitude], { icon: pizzaIcon })
+        .addTo(mapRef.current)
+        .bindPopup('RESTAURANTE')
+        .openPopup();
+      //------------------------------
+      // Marcadores lugares de entrega
 
-    markersRef.current = L.layerGroup().addTo(mapRef.current);
+      markersRef.current = L.layerGroup().addTo(mapRef.current);
 
-    fetchDataToLocation();
+      fetchDataToLocation();
+      console.log("zoom  " + zoom)
 
-    //------------------------------
+      //------------------------------
 
 
-    return () => {
-      mapRef.current.remove(); // Remove o mapa ao desmontar para evitar leaks de memória
-    };
-  }, [myVariables]);
+      return () => {
+        mapRef.current.remove(); // Remove o mapa ao desmontar para evitar leaks de memória
+      };
+    }
+  }, [myVariables, zoom]);
 
   useEffect(() => {
     // Load settings when the component mounts
     window.electronAPI.loadSettings().then((loadedSettings) => {
       setSettings(loadedSettings);
+      setMyVariables(loadedSettings);
+      setZoom(loadedSettings.zoom);
     });
   }, []);
+  useEffect(() => {
+    console.log('Updated settings:', settings);
+    console.log('Updated myVariables:', myVariables);
+    console.log('Updated zoom:', zoom);
+  }, [settings, myVariables, zoom]);
 
   useEffect(() => {
     updateMarkersPontosDeEntrega();
@@ -73,21 +84,24 @@ function App() {
   }, []);
 
   function updateMarkersPontosDeEntrega() {
-    if (markersRef.current) {
-      markersRef.current.clearLayers(); // Clear existing markers
-    }
-    
-    locations.forEach(location => {
-      PontosDeEntrega({
-        map: mapRef.current,
-        markersGroup: markersRef.current,
-        lat: location.lat,
-        lng: location.lng,
-        label: location.id,
-        minutes: Math.round((new Date() - location.data_pedido) / 60000)
-      });
-    });
+    if (myVariables && zoom && myVariables.mainLocationLatitude && myVariables.mainLocationLongitude && markersRef.current) {
 
+      if (markersRef.current) {
+        markersRef.current.clearLayers(); // Clear existing markers
+      }
+
+      locations.forEach(location => {
+        PontosDeEntrega({
+          map: mapRef.current,
+          markersGroup: markersRef.current,
+          lat: location.lat,
+          lng: location.lng,
+          label: location.id,
+          minutes: Math.round((new Date() - location.data_pedido) / 60000)
+        });
+      });
+
+    }
   };
 
   const centralizarMapa = () => {
@@ -210,7 +224,7 @@ function App() {
       </div>
 
 
-      <div className='mapa' id='mapa' style={{ height: '87vh', width: '99vw' }}></div> {/* Div for the map */}
+      {myVariables && <div className='mapa' id='mapa' style={{ height: '87vh', width: '99vw' }}></div>} {/* Div for the map */}
 
       {isModalVisible && (
         <div className="popup-modal">
@@ -220,7 +234,7 @@ function App() {
             <h4>Longitude: {newLngRestaurant}</h4>
             <div className="popup-actions">
               <button className="btn-confirm" onClick={saveNewRestaurantLocation}>OK</button>
-              <button className="btn-cancel" onClick={() => {setModalVisible(false); setNewLatRestaurant(null); setNewLngRestaurant(null);}}>Cancel</button>
+              <button className="btn-cancel" onClick={() => { setModalVisible(false); setNewLatRestaurant(null); setNewLngRestaurant(null); }}>Cancel</button>
             </div>
           </div>
         </div>

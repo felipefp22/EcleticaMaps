@@ -6,13 +6,6 @@ const fs = require('fs');
 
 let win;
 
-let isDev;
-async function initializeDevMode() {
-  isDev = (await import('electron-is-dev'));
-  
-  console.log('Charged if is dev, is dev? ', isDev);
-}
-
 const logFilePath = path.join(process.cwd(), 'app.log');
 
 // Function to append logs to a file
@@ -31,9 +24,9 @@ app.on('ready', async () => {
       enableRemoteModule: false,
     },
   });
-  await initializeDevMode();
+  
   // Load your React app
-  // win.loadURL(isDev? 'http://localhost:3000' : `file://${path.join(__dirname, "../build/index.html")}`); // For development
+   //win.loadURL('http://localhost:3000'); // For development
   win.loadURL(`file://${path.join(__dirname, "../build/index.html")}`);
 
 
@@ -43,7 +36,8 @@ app.on('ready', async () => {
   });
 });
 
-const dataFilePath = path.join(__dirname, 'src', 'myVariables.json');
+const dataFilePath = "./src/myVariables.json"
+console.log('Data file path: --->>  ', dataFilePath);
 
 function loadSettings() {
   try {
