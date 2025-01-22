@@ -47,7 +47,7 @@
     "copy-main": "cp main.js build/electron.js",
     "copy-preload": "cp preload.js build/",
     "electron": "electron .",
-    "electron:package:win": "npm run build && electron-builder -w -c.extraMetadata.main=build/electron.js",
+    "electron:package:win": "npm run build && electron-builder -w -c.extraMetadata.main=build/electron.js",  
     "electron:package:mac": "npm run build && electron-builder -m -c.extraMetadata.main=build/electron.js",
     "electron:package:linux": "npm run build && electron-builder -l -c.extraMetadata.main=build/electron.js",
     "electron-dev": "concurrently \"npm start\" \"npm run electron\"",

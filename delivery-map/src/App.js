@@ -180,8 +180,12 @@ function App() {
       <div className='barraSuperior1'>
         <button className='btn-light' onClick={handleOpenModal}>Salvar-Local</button>
 
-        <input style={{ maxWidth: "170px" }} value={newLatRestaurant || ""} type="text" onChange={(e) => setNewLatRestaurant(e.target.value)} placeholder="Latitude" />
-        <input style={{ maxWidth: "170px" }} value={newLngRestaurant || ""} type="text" onChange={(e) => setNewLngRestaurant(e.target.value)} placeholder="Longitude" />
+        <input style={{ maxWidth: "170px" }} value={newLatRestaurant || ""} type="text" 
+        onChange={(e) => {const value = e.target.value.replace(',', '.'); if (/^-?\d*\.?\d*$/.test(value)) {setNewLatRestaurant(value);}}} placeholder="Latitude"/>
+
+        <input style={{ maxWidth: "170px" }} value={newLngRestaurant || ""} type="text" 
+        onChange={(e) => {const value = e.target.value.replace(',', '.'); if (/^-?\d*\.?\d*$/.test(value)) {setNewLngRestaurant(value);}}} placeholder="Longitude"/>
+
         <h4>|</h4>
         <h4></h4>
         <h4></h4>

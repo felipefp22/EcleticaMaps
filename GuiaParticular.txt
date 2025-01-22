@@ -1,0 +1,5 @@
+npm run electron:package:win
+
+basicamente executar este comando, e executar o .exe dentro de /dist/win-unpacked
+
+lembrando que myVariables tem que ta dentro de src que o build vai copiar de la
