@@ -167,9 +167,15 @@ function App() {
 
   const [isModalVisible, setModalVisible] = useState(false); // State to control the modal visibility
   const handleOpenModal = () => {
-
-    if (newLatRestaurant && newLngRestaurant) {
-
+    const latPattern = /^-?(90(\.0{1,2})?|[0-8]?\d(\.\d{1,2})?)$/;
+    const lngPattern = /^-?(180(\.0{1,2})?|1[0-7]\d(\.\d{1,2})?|[0-9]?\d(\.\d{1,2})?)$/;
+    
+    if (
+      newLatRestaurant &&
+      latPattern.test(newLatRestaurant) &&
+      newLngRestaurant &&
+      lngPattern.test(newLngRestaurant)
+    ) {
       setModalVisible(true);
     }
   };
