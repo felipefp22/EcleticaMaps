@@ -8,9 +8,17 @@ let win;
 
 let isDev;
 async function initializeDevMode() {
-  isDev = await import('electron-is-dev');
-
+  isDev = (await import('electron-is-dev'));
+  
   console.log('Charged if is dev, is dev? ', isDev);
+}
+
+const logFilePath = path.join(process.cwd(), 'app.log');
+
+// Function to append logs to a file
+function logToFile(message) {
+  const timestamp = new Date().toISOString();
+  fs.appendFileSync(logFilePath, `[${timestamp}] ${message}\n`);
 }
 
 app.on('ready', async () => {
@@ -25,8 +33,9 @@ app.on('ready', async () => {
   });
   await initializeDevMode();
   // Load your React app
-  win.loadURL(isDev? 'http://localhost:3000' : `file://${path.join(__dirname, "../build/index.html")}`); 
-  console.log('Running in development mode:', isDev);
+  // win.loadURL(isDev? 'http://localhost:3000' : `file://${path.join(__dirname, "../build/index.html")}`); // For development
+  win.loadURL(`file://${path.join(__dirname, "../build/index.html")}`);
+
 
 
   win.on('closed', () => {
@@ -34,7 +43,7 @@ app.on('ready', async () => {
   });
 });
 
-const dataFilePath = path.join(__dirname, './../src', 'myVariables.json');
+const dataFilePath = path.join(__dirname, 'src', 'myVariables.json');
 
 function loadSettings() {
   try {

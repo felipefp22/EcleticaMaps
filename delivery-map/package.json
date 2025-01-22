@@ -25,7 +25,11 @@
     "productName": "DeliveryMap",
     "files": [
       "build/**/*",
-      "node_modules/**/*"
+      "node_modules/**/*",
+      "src/myVariables.json"
+    ],
+    "extraFiles": [
+      "src/myVariables.json"
     ],
     "directories": {
       "buildResources": "public"

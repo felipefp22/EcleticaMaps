@@ -73,20 +73,21 @@ function App() {
   }, []);
 
   function updateMarkersPontosDeEntrega() {
-
     if (markersRef.current) {
       markersRef.current.clearLayers(); // Clear existing markers
     }
-
+    
     locations.forEach(location => {
       PontosDeEntrega({
         map: mapRef.current,
+        markersGroup: markersRef.current,
         lat: location.lat,
         lng: location.lng,
         label: location.id,
         minutes: Math.round((new Date() - location.data_pedido) / 60000)
       });
     });
+
   };
 
   const centralizarMapa = () => {

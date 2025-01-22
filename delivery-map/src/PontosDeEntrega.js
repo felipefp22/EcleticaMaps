@@ -1,7 +1,7 @@
 // Marker.js
 import L from 'leaflet';
 
-export const PontosDeEntrega = ({ map, lat, lng, label, minutes }) => {
+export const PontosDeEntrega = ({ map, markersGroup, lat, lng, label, minutes }) => {
     const markerColor = selectMarkerColor(minutes);
 
     const pizzaIcon = L.divIcon({
@@ -28,10 +28,14 @@ export const PontosDeEntrega = ({ map, lat, lng, label, minutes }) => {
         className: ''
     });
 
-    L.marker([lat, lng], { icon: pizzaIcon })
-        .addTo(map)
-        .bindPopup(`${minutes}min`)
-        .openPopup();
+    const marker = L.marker([lat, lng], { icon: pizzaIcon }).bindPopup(`${minutes}min`);
+
+    markersGroup.addLayer(marker);
+
+    // L.marker([lat, lng], { icon: pizzaIcon })
+    //     .addTo(map)
+    //     .bindPopup(`${minutes}min`)
+    //     .openPopup();
 };
 
 function selectMarkerColor(minutes) {
