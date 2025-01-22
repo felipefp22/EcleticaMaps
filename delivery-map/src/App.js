@@ -167,8 +167,9 @@ function App() {
 
   const [isModalVisible, setModalVisible] = useState(false); // State to control the modal visibility
   const handleOpenModal = () => {
-    const latPattern = /^-?(90(\.0{1,2})?|[0-8]?\d(\.\d{1,2})?)$/;
-    const lngPattern = /^-?(180(\.0{1,2})?|1[0-7]\d(\.\d{1,2})?|[0-9]?\d(\.\d{1,2})?)$/;
+    const latPattern = /^-?(90(\.0{1,8})?|[0-8]?\d(\.\d{1,8})?)$/;
+
+    const lngPattern = /^-?(180(\.0{1,8})?|1[0-7]\d(\.\d{1,8})?|[0-9]?\d(\.\d{1,8})?)$/;
     
     if (
       newLatRestaurant &&
@@ -201,7 +202,7 @@ function App() {
         <h4></h4>
         <h4></h4>
 
-        <select className='selectZoom' onChange={handleZoomChange}>
+        <select className='selectZoom' value={zoom} onChange={handleZoomChange}>
           <option value="14">1 - Zoom</option>
           <option value="15">2 - Zoom</option>
           <option value="16">3 - Zoom</option>
