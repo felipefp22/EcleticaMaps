@@ -91,14 +91,16 @@ function App() {
       }
 
       locations.forEach(location => {
+        if(!location.entregador){
         PontosDeEntrega({
           map: mapRef.current,
           markersGroup: markersRef.current,
-          lat: location.lat,
-          lng: location.lng,
-          label: location.id,
-          minutes: Math.round((new Date() - location.data_pedido) / 60000)
+          lat: location.latitude,
+          lng: location.longitude,
+          label: location.numero_ped_dely,
+          minutes: Math.round((new Date() - location.data_hora_abre) / 60000)
         });
+      }
       });
 
     }
@@ -129,10 +131,11 @@ function App() {
 
   function fetchDataToLocation() {
     try {
-      const results = window.electronAPI.queryDatabase('SELECT * FROM pedidos');
+      const results = window.electronAPI.queryDatabase('SELECT * FROM pagamentos_pendentes');
 
       results.then((data) => {
         setLocations(data);
+        console.log(data)
       });
 
     } catch (error) {

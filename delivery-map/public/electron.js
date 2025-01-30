@@ -74,9 +74,9 @@ ipcMain.handle('load-settings', () => {
 ipcMain.handle('query-database', async (event, query) => {
   const connection = mysql.createConnection({
     host: 'localhost',        // O host onde o MySQL está rodando
-    user: 'root',             // Usuário do MySQL
-    password: 'minha_senha',  // Senha do MySQL
-    database: 'ecletica',
+    user: 'felipe',             // Usuário do MySQL
+    password: 'joaocoragem',  // Senha do MySQL
+    database: 'ecleticavendas',
   });
 
   return new Promise((resolve, reject) => {
