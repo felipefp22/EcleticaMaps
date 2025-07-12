@@ -10,6 +10,9 @@
   },
   "description": "Mapa de Delivery conversa com ecletica",
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.7.2",
+    "@fortawesome/free-solid-svg-icons": "^6.7.2",
+    "@fortawesome/react-fontawesome": "^0.2.2",
     "cra-template": "1.2.0",
     "electron-is-dev": "^3.0.1",
     "leaflet": "^1.9.4",
@@ -47,7 +50,7 @@
     "copy-main": "cp main.js build/electron.js",
     "copy-preload": "cp preload.js build/",
     "electron": "electron .",
-    "electron:package:win": "npm run build && electron-builder -w -c.extraMetadata.main=build/electron.js",  
+    "electron:package:win": "npm run build && electron-builder -w -c.extraMetadata.main=build/electron.js",
     "electron:package:mac": "npm run build && electron-builder -m -c.extraMetadata.main=build/electron.js",
     "electron:package:linux": "npm run build && electron-builder -l -c.extraMetadata.main=build/electron.js",
     "electron-dev": "concurrently \"npm start\" \"npm run electron\"",

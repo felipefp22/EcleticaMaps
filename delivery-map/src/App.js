@@ -4,7 +4,9 @@ import L from 'leaflet'; // Import Leaflet
 import PizzaFav from './pizza.png'; // Import the image
 
 import importedVariables from './myVariables.json'; // Import the JSON file directly
-import { PontosDeEntrega } from './PontosDeEntrega';
+import { PontosDeEntrega, selectMarkerColor } from './PontosDeEntrega';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFireFlameCurved } from '@fortawesome/free-solid-svg-icons';
 
 function App() {
   const [settings, setSettings] = useState({});
@@ -59,11 +61,17 @@ function App() {
 
   useEffect(() => {
     // Load settings when the component mounts
-    window.electronAPI.loadSettings().then((loadedSettings) => {
-      setSettings(loadedSettings);
-      setMyVariables(loadedSettings);
-      setZoom(loadedSettings.zoom);
-    });
+    if (window.electronAPI?.loadSettings) {
+      window.electronAPI.loadSettings().then((loadedSettings) => {
+        setSettings(loadedSettings);
+        setMyVariables(loadedSettings);
+        setZoom(loadedSettings.zoom);
+      });
+    } else {
+      setSettings(importedVariables);
+      setMyVariables(importedVariables);
+      setZoom(importedVariables.zoom);
+    }
   }, []);
   useEffect(() => {
     console.log('Updated settings:', settings);
@@ -78,7 +86,7 @@ function App() {
   useEffect(() => {
     const interval = setInterval(() => {
       fetchDataToLocation();
-    }, 20000); // 20 seconds
+    }, 5000); // 5 seconds
 
     return () => clearInterval(interval); // Cleanup interval on component unmount
   }, []);
@@ -91,16 +99,16 @@ function App() {
       }
 
       locations.forEach(location => {
-        if(!location.entregador){
-        PontosDeEntrega({
-          map: mapRef.current,
-          markersGroup: markersRef.current,
-          lat: location.latitude,
-          lng: location.longitude,
-          label: location.numero_ped_dely,
-          minutes: Math.round((new Date() - location.data_hora_abre) / 60000)
-        });
-      }
+        if (!location.entregador) {
+          PontosDeEntrega({
+            map: mapRef.current,
+            markersGroup: markersRef.current,
+            lat: location.latitude,
+            lng: location.longitude,
+            label: location.numero_ped_dely,
+            minutes: Math.round((new Date() - location.data_hora_abre) / 60000)
+          });
+        }
       });
 
     }
@@ -131,12 +139,16 @@ function App() {
 
   function fetchDataToLocation() {
     try {
-      const results = window.electronAPI.queryDatabase('SELECT * FROM pagamentos_pendentes');
+      if (window.electronAPI) {
+        const results = window.electronAPI.queryDatabase('SELECT * FROM pagamentos_pendentes');
 
-      results.then((data) => {
-        setLocations(data);
-        console.log(data)
-      });
+        results.then((data) => {
+          setLocations(data);
+          console.log(data)
+        });
+      } else {
+        setLocations([{ latitude: -23.652398, longitude: -46.708661, numero_ped_dely: '8', data_hora_abre: new Date("2025-07-12T20:15:00Z") }])
+      }
 
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -173,7 +185,7 @@ function App() {
     const latPattern = /^-?(90(\.0{1,8})?|[0-8]?\d(\.\d{1,8})?)$/;
 
     const lngPattern = /^-?(180(\.0{1,8})?|1[0-7]\d(\.\d{1,8})?|[0-9]?\d(\.\d{1,8})?)$/;
-    
+
     if (
       newLatRestaurant &&
       latPattern.test(newLatRestaurant) &&
@@ -190,11 +202,11 @@ function App() {
       <div className='barraSuperior1'>
         <button className='btn-light' onClick={handleOpenModal}>Salvar-Local</button>
 
-        <input style={{ maxWidth: "170px" }} value={newLatRestaurant || ""} type="text" 
-        onChange={(e) => {const value = e.target.value.replace(',', '.'); if (/^-?\d*\.?\d*$/.test(value)) {setNewLatRestaurant(value);}}} placeholder="Latitude"/>
+        <input style={{ maxWidth: "170px" }} value={newLatRestaurant || ""} type="text"
+          onChange={(e) => { const value = e.target.value.replace(',', '.'); if (/^-?\d*\.?\d*$/.test(value)) { setNewLatRestaurant(value); } }} placeholder="Latitude" />
 
-        <input style={{ maxWidth: "170px" }} value={newLngRestaurant || ""} type="text" 
-        onChange={(e) => {const value = e.target.value.replace(',', '.'); if (/^-?\d*\.?\d*$/.test(value)) {setNewLngRestaurant(value);}}} placeholder="Longitude"/>
+        <input style={{ maxWidth: "170px" }} value={newLngRestaurant || ""} type="text"
+          onChange={(e) => { const value = e.target.value.replace(',', '.'); if (/^-?\d*\.?\d*$/.test(value)) { setNewLngRestaurant(value); } }} placeholder="Longitude" />
 
         <h4>|</h4>
         <h4></h4>
@@ -219,22 +231,30 @@ function App() {
       </div>
 
       <div className='barraSuperior2'>
-        <button style={{ width: '35px', height: '35px', backgroundColor: '#fffb0b' }}></button> <h4 style={{ color: 'black' }}> 1a5 min </h4>
-        <button style={{ width: '35px', height: '35px', backgroundColor: '#a1ff0b' }}></button> <h4 style={{ color: 'black' }}> 6a10 min </h4>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', marginLeft: 3, marginRight: 15,  }}>
 
-        <button style={{ width: '35px', height: '35px', backgroundColor: '#0c97e7' }}></button> <h4 style={{ color: 'black' }}> 11a20 min </h4>
+          <div style={{ display: 'flex', alignItems: 'center' }}><div style={{ width: '35px', height: '35px', backgroundColor: selectMarkerColor(3), borderRadius: '50%', marginLeft: 10, marginRight: 2 }} /><h4 style={{ color: 'black' }}> 1-5 min </h4></div>
+          <div style={{ display: 'flex', alignItems: 'center' }}><div style={{ width: '35px', height: '35px', backgroundColor: selectMarkerColor(8), borderRadius: '50%', marginLeft: 10, marginRight: 2 }} /><h4 style={{ color: 'black' }}> 6-10 min </h4></div>
+          <div style={{ display: 'flex', alignItems: 'center' }}><div style={{ width: '35px', height: '35px', backgroundColor: selectMarkerColor(15), borderRadius: '50%', marginLeft: 10, marginRight: 2 }} /><h4 style={{ color: 'black' }}> 11-20 min </h4></div>
+          <div style={{ display: 'flex', alignItems: 'center' }}><div style={{ width: '35px', height: '35px', backgroundColor: selectMarkerColor(25), borderRadius: '50%', marginLeft: 10, marginRight: 2 }} /><h4 style={{ color: 'black' }}> 21-30 min </h4></div>
+          <div style={{ display: 'flex', alignItems: 'center' }}><div style={{ width: '35px', height: '35px', backgroundColor: selectMarkerColor(35), borderRadius: '50%', marginLeft: 10, marginRight: 2 }} /><h4 style={{ color: 'black' }}> 31-40 min </h4></div>
+          <div style={{ display: 'flex', alignItems: 'center' }}><div style={{ width: '35px', height: '35px', backgroundColor: selectMarkerColor(45), borderRadius: '50%', marginLeft: 10, marginRight: 2 }} /><h4 style={{ color: 'black' }}> 41-50 min </h4></div>
+          <div style={{ display: 'flex', alignItems: 'center' }}><div style={{ width: '35px', height: '35px', backgroundColor: selectMarkerColor(55), borderRadius: '50%', marginLeft: 10, marginRight: 2 }} /><h4 style={{ color: 'black' }}> 51-60 min </h4></div>
 
-        <button style={{ width: '35px', height: '35px', backgroundColor: '#5715f1' }}></button> <h4 style={{ color: 'black' }}> 21a30 min </h4>
 
-        <button style={{ width: '35px', height: '35px', backgroundColor: '#eb2778' }}></button> <h4 style={{ color: 'black' }}> 31a40 min </h4>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', width: '35px', height: '35px', backgroundColor: selectMarkerColor(68), borderRadius: '50%', marginLeft: 10, marginRight: 2, alignContent: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <FontAwesomeIcon icon={faFireFlameCurved} style={{ color: '#FFD43B', fontSize: '18px', position: 'absolute', bottom: 25 }} />
+            </div> <h4 style={{ color: 'black' }}> 61-70 min </h4>
+          </div>
 
-        <button style={{ width: '35px', height: '35px', backgroundColor: '#ec5b06' }}></button> <h4 style={{ color: 'black' }}> 41a50 min </h4>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', width: '35px', height: '35px', backgroundColor: "#e40e0e", borderRadius: '50%', marginLeft: 10, marginRight: 2, border: '3px solid #f36818', }}>
+              <FontAwesomeIcon icon={faFireFlameCurved} style={{ color: '#FFD43B', fontSize: '30px', position: 'absolute', bottom: 20, textShadow: '0px 2px 100px rgba(0,0,0,0.4)' }} />
+            </div> <h4 style={{ color: 'black' }}> 70+ min </h4>
+          </div>
 
-        <button style={{ width: '35px', height: '35px', backgroundColor: '#e40e0e' }}></button> <h4 style={{ color: 'black' }}> 51a60 min </h4>
-
-        <button style={{ width: '35px', height: '35px', backgroundColor: '#e40e0e', border: '4px solid #f36818' }}></button> <h4 style={{ color: 'black' }}> 61a70 min </h4>
-        <button style={{ width: '35px', height: '35px', backgroundColor: '#e40e0e', border: '10px solid #f36818' }}></button> <h4 style={{ color: 'black' }}> 70+ min </h4>
-
+        </div>
       </div>
 
 
