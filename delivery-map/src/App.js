@@ -99,7 +99,7 @@ function App() {
       }
 
       locations.forEach(location => {
-        if (!location.entregador) {
+        if (!location.entregador && location.flag_dely != "v") {
           PontosDeEntrega({
             map: mapRef.current,
             markersGroup: markersRef.current,
@@ -147,7 +147,7 @@ function App() {
           console.log(data)
         });
       } else {
-        setLocations([{ latitude: -23.652398, longitude: -46.708661, numero_ped_dely: '8', data_hora_abre: new Date("2025-07-12T20:15:00Z") }])
+        setLocations([{ latitude: -23.652398, longitude: -46.708661, numero_ped_dely: '8', data_hora_abre: new Date("2025-07-12T20:45:00Z") }])
       }
 
     } catch (error) {
@@ -231,34 +231,37 @@ function App() {
       </div>
 
       <div className='barraSuperior2'>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', marginLeft: 3, marginRight: 15,  }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
 
-          <div style={{ display: 'flex', alignItems: 'center' }}><div style={{ width: '35px', height: '35px', backgroundColor: selectMarkerColor(3), borderRadius: '50%', marginLeft: 10, marginRight: 2 }} /><h4 style={{ color: 'black' }}> 1-5 min </h4></div>
-          <div style={{ display: 'flex', alignItems: 'center' }}><div style={{ width: '35px', height: '35px', backgroundColor: selectMarkerColor(8), borderRadius: '50%', marginLeft: 10, marginRight: 2 }} /><h4 style={{ color: 'black' }}> 6-10 min </h4></div>
-          <div style={{ display: 'flex', alignItems: 'center' }}><div style={{ width: '35px', height: '35px', backgroundColor: selectMarkerColor(15), borderRadius: '50%', marginLeft: 10, marginRight: 2 }} /><h4 style={{ color: 'black' }}> 11-20 min </h4></div>
-          <div style={{ display: 'flex', alignItems: 'center' }}><div style={{ width: '35px', height: '35px', backgroundColor: selectMarkerColor(25), borderRadius: '50%', marginLeft: 10, marginRight: 2 }} /><h4 style={{ color: 'black' }}> 21-30 min </h4></div>
-          <div style={{ display: 'flex', alignItems: 'center' }}><div style={{ width: '35px', height: '35px', backgroundColor: selectMarkerColor(35), borderRadius: '50%', marginLeft: 10, marginRight: 2 }} /><h4 style={{ color: 'black' }}> 31-40 min </h4></div>
-          <div style={{ display: 'flex', alignItems: 'center' }}><div style={{ width: '35px', height: '35px', backgroundColor: selectMarkerColor(45), borderRadius: '50%', marginLeft: 10, marginRight: 2 }} /><h4 style={{ color: 'black' }}> 41-50 min </h4></div>
-          <div style={{ display: 'flex', alignItems: 'center' }}><div style={{ width: '35px', height: '35px', backgroundColor: selectMarkerColor(55), borderRadius: '50%', marginLeft: 10, marginRight: 2 }} /><h4 style={{ color: 'black' }}> 51-60 min </h4></div>
+          <div style={{ width: '35px', height: '35px', backgroundColor: selectMarkerColor(3), borderRadius: '50%', marginLeft: 10, marginRight: 2 }}></div> <h4 style={{ color: 'black' }}> 1-5 min </h4>
+
+          <div style={{ width: '35px', height: '35px', backgroundColor: selectMarkerColor(8), borderRadius: '50%', marginLeft: 10, marginRight: 2 }}></div> <h4 style={{ color: 'black' }}> 6-10 min </h4>
+
+          <div style={{ width: '35px', height: '35px', backgroundColor: selectMarkerColor(15), borderRadius: '50%', marginLeft: 10, marginRight: 2 }}></div> <h4 style={{ color: 'black' }}> 11-20 min </h4>
+
+          <div style={{ width: '35px', height: '35px', backgroundColor: selectMarkerColor(25), borderRadius: '50%', marginLeft: 10, marginRight: 2 }}></div> <h4 style={{ color: 'black' }}> 21-30 min </h4>
+
+          <div style={{ width: '35px', height: '35px', backgroundColor: selectMarkerColor(35), borderRadius: '50%', marginLeft: 10, marginRight: 2 }}></div> <h4 style={{ color: 'black' }}> 31-40 min </h4>
+
+          <div style={{ width: '35px', height: '35px', backgroundColor: selectMarkerColor(45), borderRadius: '50%', marginLeft: 10, marginRight: 2 }}></div> <h4 style={{ color: 'black' }}> 41-50 min </h4>
+
+          <div style={{ width: '35px', height: '35px', backgroundColor: selectMarkerColor(55), borderRadius: '50%', marginLeft: 10, marginRight: 2 }}></div> <h4 style={{ color: 'black' }}> 51-60 min </h4>
 
 
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', width: '35px', height: '35px', backgroundColor: selectMarkerColor(68), borderRadius: '50%', marginLeft: 10, marginRight: 2, alignContent: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <FontAwesomeIcon icon={faFireFlameCurved} style={{ color: '#FFD43B', fontSize: '18px', position: 'absolute', bottom: 25 }} />
-            </div> <h4 style={{ color: 'black' }}> 61-70 min </h4>
-          </div>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', width: '35px', height: '35px', backgroundColor: selectMarkerColor(68), borderRadius: '50%', marginLeft: 10, marginRight: 2, alignContent: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <FontAwesomeIcon icon={faFireFlameCurved} style={{ color: '#FFD43B', fontSize: '18=5px', position: 'absolute', bottom: 25 }} />
+          </div> <h4 style={{ color: 'black' }}> 61-70 min </h4>
 
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', width: '35px', height: '35px', backgroundColor: "#e40e0e", borderRadius: '50%', marginLeft: 10, marginRight: 2, border: '3px solid #f36818', }}>
-              <FontAwesomeIcon icon={faFireFlameCurved} style={{ color: '#FFD43B', fontSize: '30px', position: 'absolute', bottom: 20, textShadow: '0px 2px 100px rgba(0,0,0,0.4)' }} />
-            </div> <h4 style={{ color: 'black' }}> 70+ min </h4>
-          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', width: '35px', height: '35px', backgroundColor: "#e40e0e", borderRadius: '50%', marginLeft: 10, marginRight: 2, border: '4px solid #f36818', }}>
+            <FontAwesomeIcon icon={faFireFlameCurved} style={{ color: '#FFD43B', fontSize: '30px', position: 'absolute', bottom: 20, textShadow: '0px 2px 100px rgba(0,0,0,0.4)' }} />
+          </div> <h4 style={{ color: 'black' }}> 70+ min </h4>
 
         </div>
       </div>
 
 
-      {myVariables && <div className='mapa' id='mapa' style={{ height: '87vh', width: '99vw' }}></div>} {/* Div for the map */}
+      {myVariables && <div className='mapa' id='mapa' style={{ height: '87vh', width: '100vw' }}></div>} {/* Div for the map */}
 
       {isModalVisible && (
         <div className="popup-modal">

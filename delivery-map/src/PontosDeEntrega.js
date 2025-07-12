@@ -77,7 +77,7 @@ export function selectMarkerColor(minutes) {
         // return '#e40e0e; border: 4px solid #f36818'
     } else if (minutes > 70) {
         // return '#e40e0e'
-        return '#e40e0e; border: 3px solid #f36818'
+        return '#e40e0e; border: 4px solid #f36818'
     }
 }
 
