@@ -50,12 +50,12 @@
   background-color: rgb(255, 255, 255); /* Light blue-gray */
   padding-top: 10px;
   padding-bottom: 10px;
-  height:3vh; /* Slightly taller for better layout */
+  height:4vh; /* Slightly taller for better layout */
   border: 1px solid #ccc; /* Subtle border */
   display: flex;
   align-items: center; /* Vertically align items */
   justify-content: flex-start; /* Align items horizontally */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Soft shadow */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.714); /* Soft shadow */
   font-family: Arial, sans-serif;
 }
 
@@ -81,7 +81,7 @@
 }
 
 .mapa{
-  border-top: 2px solid black;
+  /* border-top: 1px solid black; */
 }
 
 input{

@@ -7,6 +7,9 @@ import importedVariables from './myVariables.json'; // Import the JSON file dire
 import { PontosDeEntrega, selectMarkerColor } from './PontosDeEntrega';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFireFlameCurved } from '@fortawesome/free-solid-svg-icons';
+import 'leaflet.markercluster/dist/leaflet.markercluster.js';
+import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
+import 'leaflet.markercluster/dist/MarkerCluster.css';
 
 function App() {
   const [settings, setSettings] = useState({});
@@ -18,46 +21,119 @@ function App() {
   const markersRef = useRef(null); // Reference to manage markers
 
 
+  // Load settings when the component mounts / can be with clustr or without cluste <>----<>
+  // useEffect(() => {
+  //   // SEM CLUSTER--------
+
+  //   if (myVariables && zoom && myVariables.mainLocationLatitude && myVariables.mainLocationLongitude) {
+  //     console.log('myVariables:', myVariables);
+  //     // Inicializa o mapa
+  //     mapRef.current = L.map('mapa').setView([myVariables.mainLocationLatitude, myVariables.mainLocationLongitude], zoom); // Define a centralização do mapa
+
+  //     // Adiciona uma camada de tiles do OpenStreetMap
+  //     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  //       maxZoom: 19,
+  //       attribution: '&copy; OpenStreetMap contributors',
+  //     }).addTo(mapRef.current);
+
+  //     // Adicionando marcador principal
+  //     const pizzaIcon = L.icon({
+  //       iconUrl: PizzaFav,
+  //       iconSize: [70, 70],
+  //       iconAnchor: [20, 40],
+  //       popupAnchor: [0, -40],
+  //     });
+  //     L.marker([myVariables.mainLocationLatitude, myVariables.mainLocationLongitude], { icon: pizzaIcon })
+  //       .addTo(mapRef.current)
+  //       .bindPopup('RESTAURANTE')
+  //       .openPopup();
+  //     //------------------------------
+  //     // Marcadores lugares de entrega
+
+  //     markersRef.current = L.layerGroup().addTo(mapRef.current);
+
+  //     fetchDataToLocation();
+  //     console.log("zoom  " + zoom)
+
+  //     //------------------------------
+  //     return () => {
+  //       mapRef.current.remove(); // Remove o mapa ao desmontar para evitar leaks de memória
+  //     };
+  //   }
+  // }, [myVariables, zoom]);
+
   useEffect(() => {
+    // COM CLUSTER--------
 
     if (myVariables && zoom && myVariables.mainLocationLatitude && myVariables.mainLocationLongitude) {
       console.log('myVariables:', myVariables);
-      // Inicializa o mapa
-      mapRef.current = L.map('mapa').setView([myVariables.mainLocationLatitude, myVariables.mainLocationLongitude], zoom); // Define a centralização do mapa
 
-      // Adiciona uma camada de tiles do OpenStreetMap
+      // Inicializa o mapa
+      mapRef.current = L.map('mapa').setView(
+        [myVariables.mainLocationLatitude, myVariables.mainLocationLongitude],
+        zoom
+      );
+
+      // Adiciona camada OSM
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '&copy; OpenStreetMap contributors',
       }).addTo(mapRef.current);
 
-      // Adicionando marcador principal
+      // Ícone principal (restaurante)
       const pizzaIcon = L.icon({
         iconUrl: PizzaFav,
         iconSize: [70, 70],
         iconAnchor: [20, 40],
         popupAnchor: [0, -40],
       });
-      L.marker([myVariables.mainLocationLatitude, myVariables.mainLocationLongitude], { icon: pizzaIcon })
+
+      L.marker(
+        [myVariables.mainLocationLatitude, myVariables.mainLocationLongitude],
+        { icon: pizzaIcon }
+      )
         .addTo(mapRef.current)
         .bindPopup('RESTAURANTE')
         .openPopup();
-      //------------------------------
-      // Marcadores lugares de entrega
 
-      markersRef.current = L.layerGroup().addTo(mapRef.current);
+      // ✅ INICIALIZA MARKER CLUSTER
+      markersRef.current = L.markerClusterGroup({
+        iconCreateFunction: (cluster) => {
+          const count = cluster.getChildCount();
+          return L.divIcon({
+            html: `<div style="
+              background: rgba(148, 56, 235, 07); 
+              color: white; 
+              font-weight: bold;
+              font-size: 21px; 
+              width: 40px; 
+              height: 40px; 
+              display: flex; 
+              align-items: center; 
+              justify-content: center;
+              border: 3px solid white;
+              box-shadow: 0 0 4px rgba(0,0,0,0.5);
+            ">[${count}]</div>`,
+            className: '',
+            iconSize: [40, 40],
+          });
+        },
+      });
 
+      markersRef.current.addTo(mapRef.current); // ⬅️ Adiciona cluster ao mapa
+
+      // Carrega dados
       fetchDataToLocation();
-      console.log("zoom  " + zoom)
+      console.log('zoom  ' + zoom);
 
-      //------------------------------
-
-
+      // Cleanup
       return () => {
-        mapRef.current.remove(); // Remove o mapa ao desmontar para evitar leaks de memória
+        mapRef.current.remove();
       };
     }
   }, [myVariables, zoom]);
+  // Load settings when the component mounts / can be with clustr or without cluste <>----<>
+
 
   useEffect(() => {
     // Load settings when the component mounts
@@ -99,10 +175,10 @@ function App() {
       }
 
       locations.forEach(location => {
-        if (!location.entregador && location.flag_dely != "v") {
+        if (!location.entregador && location.flag_dely != "V") {
           PontosDeEntrega({
             map: mapRef.current,
-            markersGroup: markersRef.current,
+            markersClusterGroup: markersRef.current,
             lat: location.latitude,
             lng: location.longitude,
             label: location.numero_ped_dely,
@@ -147,7 +223,8 @@ function App() {
           console.log(data)
         });
       } else {
-        setLocations([{ latitude: -23.652398, longitude: -46.708661, numero_ped_dely: '8', data_hora_abre: new Date("2025-07-12T20:45:00Z") }])
+        setLocations([{ latitude: -23.652398, longitude: -46.708661, numero_ped_dely: '8', data_hora_abre: new Date("2025-07-12T20:45:00Z") },
+        { latitude: -23.652, longitude: -46.7089, numero_ped_dely: '52', data_hora_abre: new Date("2025-07-12T20:45:00Z") }])
       }
 
     } catch (error) {
