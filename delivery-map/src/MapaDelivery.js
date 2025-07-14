@@ -32,6 +32,7 @@ export default function MapaDelivery() {
 
       // Adiciona uma camada de tiles do OpenStreetMap
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        minZoom: 12,
         maxZoom: 19,
         attribution: '&copy; OpenStreetMap contributors',
       }).addTo(mapRef.current);
