@@ -10,7 +10,7 @@ import { faFireFlameCurved } from '@fortawesome/free-solid-svg-icons';
 import 'leaflet.markercluster/dist/leaflet.markercluster.js';
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 import 'leaflet.markercluster/dist/MarkerCluster.css';
-import { getOffsetPosition, isClose } from './ManageOverlapPoints';
+import { filterLoccationsOverLaping, getOffsetPosition, isClose } from './ManageOverlapPoints';
 
 function App() {
   const [settings, setSettings] = useState({});
@@ -220,12 +220,19 @@ function App() {
         const results = window.electronAPI.queryDatabase('SELECT * FROM pagamentos_pendentes');
 
         results.then((data) => {
-          setLocations(data);
+          setLocations(filterLoccationsOverLaping(data));
           console.log(data)
         });
       } else {
-        setLocations([{ latitude: -23.652398, longitude: -46.708661, numero_ped_dely: '8', data_hora_abre: new Date("2025-07-12T20:45:00Z") },
-        { latitude: -23.652, longitude: -46.7089, numero_ped_dely: '52', data_hora_abre: new Date("2025-07-12T20:45:00Z") }])
+        setLocations(
+          filterLoccationsOverLaping([{ latitude: -23.652398, longitude: -46.708661, numero_ped_dely: '8', data_hora_abre: new Date("2025-07-12T20:45:00Z") },
+          { latitude: -23.652398, longitude: -46.7086, numero_ped_dely: '10', data_hora_abre: new Date("2025-07-12T20:45:00Z") },
+          { latitude: -23.652398, longitude: -46.7086, numero_ped_dely: '10', data_hora_abre: new Date("2025-07-12T20:45:00Z") },
+          { latitude: -23.652398, longitude: -46.7086, numero_ped_dely: '11', data_hora_abre: new Date("2025-07-12T20:45:00Z") },
+          { latitude: -23.652398, longitude: -46.7086, numero_ped_dely: '12', data_hora_abre: new Date("2025-07-12T20:45:00Z") },
+          { latitude: -23.652398, longitude: -46.7086, numero_ped_dely: '13', data_hora_abre: new Date("2025-07-12T20:45:00Z") },
+          { latitude: -23.652398, longitude: -46.7086, numero_ped_dely: '14', data_hora_abre: new Date("2025-07-12T20:45:00Z") },
+          { latitude: -23.652, longitude: -46.7089, numero_ped_dely: '52', data_hora_abre: new Date("2025-07-12T20:45:00Z") }]))
       }
 
     } catch (error) {
