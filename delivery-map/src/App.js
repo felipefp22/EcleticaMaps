@@ -22,116 +22,116 @@ function App() {
 
 
   // Load settings when the component mounts / can be with clustr or without cluste <>----<>
-  // useEffect(() => {
-  //   // SEM CLUSTER--------
-
-  //   if (myVariables && zoom && myVariables.mainLocationLatitude && myVariables.mainLocationLongitude) {
-  //     console.log('myVariables:', myVariables);
-  //     // Inicializa o mapa
-  //     mapRef.current = L.map('mapa').setView([myVariables.mainLocationLatitude, myVariables.mainLocationLongitude], zoom); // Define a centralização do mapa
-
-  //     // Adiciona uma camada de tiles do OpenStreetMap
-  //     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  //       maxZoom: 19,
-  //       attribution: '&copy; OpenStreetMap contributors',
-  //     }).addTo(mapRef.current);
-
-  //     // Adicionando marcador principal
-  //     const pizzaIcon = L.icon({
-  //       iconUrl: PizzaFav,
-  //       iconSize: [70, 70],
-  //       iconAnchor: [20, 40],
-  //       popupAnchor: [0, -40],
-  //     });
-  //     L.marker([myVariables.mainLocationLatitude, myVariables.mainLocationLongitude], { icon: pizzaIcon })
-  //       .addTo(mapRef.current)
-  //       .bindPopup('RESTAURANTE')
-  //       .openPopup();
-  //     //------------------------------
-  //     // Marcadores lugares de entrega
-
-  //     markersRef.current = L.layerGroup().addTo(mapRef.current);
-
-  //     fetchDataToLocation();
-  //     console.log("zoom  " + zoom)
-
-  //     //------------------------------
-  //     return () => {
-  //       mapRef.current.remove(); // Remove o mapa ao desmontar para evitar leaks de memória
-  //     };
-  //   }
-  // }, [myVariables, zoom]);
-
   useEffect(() => {
-    // COM CLUSTER--------
+    // SEM CLUSTER--------
 
     if (myVariables && zoom && myVariables.mainLocationLatitude && myVariables.mainLocationLongitude) {
       console.log('myVariables:', myVariables);
-
       // Inicializa o mapa
-      mapRef.current = L.map('mapa').setView(
-        [myVariables.mainLocationLatitude, myVariables.mainLocationLongitude],
-        zoom
-      );
+      mapRef.current = L.map('mapa').setView([myVariables.mainLocationLatitude, myVariables.mainLocationLongitude], zoom); // Define a centralização do mapa
 
-      // Adiciona camada OSM
+      // Adiciona uma camada de tiles do OpenStreetMap
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '&copy; OpenStreetMap contributors',
       }).addTo(mapRef.current);
 
-      // Ícone principal (restaurante)
+      // Adicionando marcador principal
       const pizzaIcon = L.icon({
         iconUrl: PizzaFav,
         iconSize: [70, 70],
         iconAnchor: [20, 40],
         popupAnchor: [0, -40],
       });
-
-      L.marker(
-        [myVariables.mainLocationLatitude, myVariables.mainLocationLongitude],
-        { icon: pizzaIcon }
-      )
+      L.marker([myVariables.mainLocationLatitude, myVariables.mainLocationLongitude], { icon: pizzaIcon })
         .addTo(mapRef.current)
         .bindPopup('RESTAURANTE')
         .openPopup();
+      //------------------------------
+      // Marcadores lugares de entrega
 
-      // ✅ INICIALIZA MARKER CLUSTER
-      markersRef.current = L.markerClusterGroup({
-        iconCreateFunction: (cluster) => {
-          const count = cluster.getChildCount();
-          return L.divIcon({
-            html: `<div style="
-              background: rgba(148, 56, 235, 07); 
-              color: white; 
-              font-weight: bold;
-              font-size: 21px; 
-              width: 40px; 
-              height: 40px; 
-              display: flex; 
-              align-items: center; 
-              justify-content: center;
-              border: 3px solid white;
-              box-shadow: 0 0 4px rgba(0,0,0,0.5);
-            ">[${count}]</div>`,
-            className: '',
-            iconSize: [40, 40],
-          });
-        },
-      });
+      markersRef.current = L.layerGroup().addTo(mapRef.current);
 
-      markersRef.current.addTo(mapRef.current); // ⬅️ Adiciona cluster ao mapa
-
-      // Carrega dados
       fetchDataToLocation();
-      console.log('zoom  ' + zoom);
+      console.log("zoom  " + zoom)
 
-      // Cleanup
+      //------------------------------
       return () => {
-        mapRef.current.remove();
+        mapRef.current.remove(); // Remove o mapa ao desmontar para evitar leaks de memória
       };
     }
   }, [myVariables, zoom]);
+
+  // useEffect(() => {
+  //   // COM CLUSTER--------
+
+  //   if (myVariables && zoom && myVariables.mainLocationLatitude && myVariables.mainLocationLongitude) {
+  //     console.log('myVariables:', myVariables);
+
+  //     // Inicializa o mapa
+  //     mapRef.current = L.map('mapa').setView(
+  //       [myVariables.mainLocationLatitude, myVariables.mainLocationLongitude],
+  //       zoom
+  //     );
+
+  //     // Adiciona camada OSM
+  //     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  //       maxZoom: 19,
+  //       attribution: '&copy; OpenStreetMap contributors',
+  //     }).addTo(mapRef.current);
+
+  //     // Ícone principal (restaurante)
+  //     const pizzaIcon = L.icon({
+  //       iconUrl: PizzaFav,
+  //       iconSize: [70, 70],
+  //       iconAnchor: [20, 40],
+  //       popupAnchor: [0, -40],
+  //     });
+
+  //     L.marker(
+  //       [myVariables.mainLocationLatitude, myVariables.mainLocationLongitude],
+  //       { icon: pizzaIcon }
+  //     )
+  //       .addTo(mapRef.current)
+  //       .bindPopup('RESTAURANTE')
+  //       .openPopup();
+
+  //     // ✅ INICIALIZA MARKER CLUSTER
+  //     markersRef.current = L.markerClusterGroup({
+  //       iconCreateFunction: (cluster) => {
+  //         const count = cluster.getChildCount();
+  //         return L.divIcon({
+  //           html: `<div style="
+  //             background: rgba(148, 56, 235, 07); 
+  //             color: white; 
+  //             font-weight: bold;
+  //             font-size: 21px; 
+  //             width: 40px; 
+  //             height: 40px; 
+  //             display: flex; 
+  //             align-items: center; 
+  //             justify-content: center;
+  //             border: 3px solid white;
+  //             box-shadow: 0 0 4px rgba(0,0,0,0.5);
+  //           ">[${count}]</div>`,
+  //           className: '',
+  //           iconSize: [40, 40],
+  //         });
+  //       },
+  //     });
+
+  //     markersRef.current.addTo(mapRef.current); // ⬅️ Adiciona cluster ao mapa
+
+  //     // Carrega dados
+  //     fetchDataToLocation();
+  //     console.log('zoom  ' + zoom);
+
+  //     // Cleanup
+  //     return () => {
+  //       mapRef.current.remove();
+  //     };
+  //   }
+  // }, [myVariables, zoom]);
   // Load settings when the component mounts / can be with clustr or without cluste <>----<>
 
 
@@ -178,7 +178,7 @@ function App() {
         if (!location.entregador && location.flag_dely != "V") {
           PontosDeEntrega({
             map: mapRef.current,
-            markersClusterGroup: markersRef.current,
+            markersGroup: markersRef.current,
             lat: location.latitude,
             lng: location.longitude,
             label: location.numero_ped_dely,

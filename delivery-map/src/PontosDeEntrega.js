@@ -6,68 +6,21 @@ import { faFireFlameCurved } from '@fortawesome/free-solid-svg-icons';
 import 'leaflet.markercluster/dist/leaflet.markercluster.js';
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 
-// export const PontosDeEntrega = ({ map, markersGroup, lat, lng, label, minutes }) => {
-//     const markerColor = selectMarkerColor(minutes);
+export const PontosDeEntrega = ({ map, markersGroup, lat, lng, label, minutes }) => {
+    const markerColor = selectMarkerColor(minutes);
 
-//     // const pizzaIcon = L.divIcon({
-//     //     html: `
-//     //   <div style="
-//     //     position: relative; 
-//     //     width: 40px; 
-//     //     height: 40px; 
-//     //     background-color: ${markerColor};
-//     //     text-align: center;
-//     //     line-height: 40px;
-//     //     font-weight: 800;
-//     //     color: white;
-//     //     font-size: 21px;
-//     //     border-radius: 50px;
-//     //             -webkit-text-stroke: 1.5px black;  /* Border around the text */
-//     //     // text-shadow: 1px 1px 0 black;    /* Shadow to create a border effect */
-//     //     ">
-//     //     ${label}
-//     //   </div>`,
-//     //     iconSize: [40, 40],
-//     //     iconAnchor: [20, 40],
-//     //     popupAnchor: [0, -40],
-//     //     className: ''
-//     // });
+    const pizzaIcon = L.divIcon({
+        html: ReactDOMServer.renderToStaticMarkup(
+            <MarkerLabel label={label} markerColor={markerColor} minutes={minutes} />
+        ),
+        iconSize: [40, 40],
+        iconAnchor: [20, 40],
+        popupAnchor: [0, -40],
+        className: '',
+    });
+    const marker = L.marker([lat, lng], { icon: pizzaIcon }).bindPopup(`${minutes}min`);
 
-//     const pizzaIcon = L.divIcon({
-//         html: ReactDOMServer.renderToStaticMarkup(
-//             <MarkerLabel label={label} markerColor={markerColor} minutes={minutes} />
-//         ),
-//         iconSize: [40, 40],
-//         iconAnchor: [20, 40],
-//         popupAnchor: [0, -40],
-//         className: '',
-//     });
-//     const marker = L.marker([lat, lng], { icon: pizzaIcon }).bindPopup(`${minutes}min`);
-
-//     markersGroup.addLayer(marker);
-
-//     // L.marker([lat, lng], { icon: pizzaIcon })
-//     //     .addTo(map)
-//     //     .bindPopup(`${minutes}min`)
-//     //     .openPopup();
-// };
-
-export const PontosDeEntrega = ({ markersClusterGroup, lat, lng, label, minutes }) => {
-  const markerColor = selectMarkerColor(minutes);
-
-  const pizzaIcon = L.divIcon({
-    html: ReactDOMServer.renderToStaticMarkup(
-      <MarkerLabel label={label} markerColor={markerColor} minutes={minutes} />
-    ),
-    iconSize: [40, 40],
-    iconAnchor: [20, 40],
-    popupAnchor: [0, -40],
-    className: '',
-  });
-
-  const marker = L.marker([lat, lng], { icon: pizzaIcon }).bindPopup(`${minutes}min`);
-
-  markersClusterGroup.addLayer(marker); // Add to cluster group
+    markersGroup.addLayer(marker);
 };
 
 export function selectMarkerColor(minutes) {
