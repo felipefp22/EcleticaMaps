@@ -175,7 +175,8 @@ function App() {
         markersRef.current.clearLayers(); // Clear existing markers
       }
 
-      locations.forEach(location => {
+      const filteredLocations = filterLoccationsOverLaping(locations);
+      filteredLocations.forEach(location => {
         if (!location.entregador && location.flag_dely != "V") {
           PontosDeEntrega({
             map: mapRef.current,
@@ -220,21 +221,17 @@ function App() {
         const results = window.electronAPI.queryDatabase('SELECT * FROM pagamentos_pendentes');
 
         results.then((data) => {
-          setLocations(filterLoccationsOverLaping(data));
-          console.log(data)
+          setLocations(data);
         });
       } else {
         setLocations(
-          filterLoccationsOverLaping([{ latitude: -23.652398, longitude: -46.708661, numero_ped_dely: '8', data_hora_abre: new Date("2025-07-12T20:45:00Z") },
+          [{ latitude: -23.652398, longitude: -46.708661, numero_ped_dely: '8', data_hora_abre: new Date("2025-07-12T20:45:00Z") },
           { latitude: -23.652398, longitude: -46.7086, numero_ped_dely: '10', data_hora_abre: new Date("2025-07-12T20:45:00Z") },
           { latitude: -23.652398, longitude: -46.7086, numero_ped_dely: '10', data_hora_abre: new Date("2025-07-12T20:45:00Z") },
           { latitude: -23.652398, longitude: -46.7086, numero_ped_dely: '11', data_hora_abre: new Date("2025-07-12T20:45:00Z") },
           { latitude: -23.652398, longitude: -46.7086, numero_ped_dely: '12', data_hora_abre: new Date("2025-07-12T20:45:00Z") },
-          { latitude: -23.652398, longitude: -46.7086, numero_ped_dely: '13', data_hora_abre: new Date("2025-07-12T20:45:00Z") },
-          { latitude: -23.652398, longitude: -46.7086, numero_ped_dely: '14', data_hora_abre: new Date("2025-07-12T20:45:00Z") },
-          { latitude: -23.652, longitude: -46.7089, numero_ped_dely: '52', data_hora_abre: new Date("2025-07-12T20:45:00Z") }]))
+          { latitude: -23.652, longitude: -46.7089, numero_ped_dely: '52', data_hora_abre: new Date("2025-07-12T20:45:00Z") }])
       }
-
     } catch (error) {
       console.error('Error fetching data:', error);
     }
