@@ -1,13 +1,11 @@
 import CryptoJS from 'crypto-js';
 
-const secretKey = 'klfgdhsdgdfsgjldasfsdlgsdlikgsfdhgdfghj484887gdes';
-
+const words = 'klfgdhsdgdfsgjldasfsdlgsdlikgsfdhgdfghj484887gdes';
 export function encrypt(word) {
-    return CryptoJS.AES.encrypt(word, secretKey).toString();
+    return CryptoJS.AES.encrypt(word, words).toString();
 }
-
 export function decrypt(ciphertext) {
-    return CryptoJS.AES.decrypt(ciphertext, secretKey).toString(CryptoJS.enc.Utf8);
+    return CryptoJS.AES.decrypt(ciphertext, words).toString(CryptoJS.enc.Utf8);
 }
 
 export async function verifyIfMachineIsAuthorazized() {
