@@ -10,6 +10,7 @@ import { faFireFlameCurved } from '@fortawesome/free-solid-svg-icons';
 import 'leaflet.markercluster/dist/leaflet.markercluster.js';
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 import 'leaflet.markercluster/dist/MarkerCluster.css';
+import { getOffsetPosition, isClose } from './ManageOverlapPoints';
 
 function App() {
   const [settings, setSettings] = useState({});
