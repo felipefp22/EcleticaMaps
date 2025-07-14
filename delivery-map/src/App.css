@@ -2,8 +2,6 @@
 
 .barraSuperior1 {
   background-color: rgb(148, 56, 235); /* Vibrant purple */
-  padding: 10px;
-  height: 5vh; /* Slightly taller for better spacing */
   border: 1px solid black;
   display: flex;
   align-items: center;
@@ -48,9 +46,6 @@
 
 .barraSuperior2 {
   background-color: rgb(255, 255, 255); /* Light blue-gray */
-  padding-top: 10px;
-  padding-bottom: 10px;
-  height:4vh; /* Slightly taller for better layout */
   border: 1px solid #ccc; /* Subtle border */
   display: flex;
   align-items: center; /* Vertically align items */
