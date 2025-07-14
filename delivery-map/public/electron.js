@@ -1,11 +1,10 @@
-
 const { app, BrowserWindow, ipcMain } = require('electron');
 const mysql = require('mysql2');
 const path = require('path');
+const { machineIdSync } = require('node-machine-id');
 const fs = require('fs');
 
 let win;
-
 const logFilePath = path.join(process.cwd(), 'app.log');
 
 // Function to append logs to a file
@@ -24,12 +23,10 @@ app.on('ready', async () => {
       enableRemoteModule: false,
     },
   });
-  
+
   // Load your React app
-   //win.loadURL('http://localhost:3000'); // For development
+  //win.loadURL('http://localhost:3000'); // For development
   win.loadURL(`file://${path.join(__dirname, "../build/index.html")}`);
-
-
 
   win.on('closed', () => {
     mainWindow = null;
@@ -37,17 +34,6 @@ app.on('ready', async () => {
 });
 
 const dataFilePath = "./src/myVariables.json"
-console.log('Data file path: --->>  ', dataFilePath);
-
-function loadSettings() {
-  try {
-    const data = fs.readFileSync(dataFilePath, 'utf-8');
-    return JSON.parse(data);
-  } catch (err) {
-    console.log('Error reading settings:', err);
-    return {}; // Return default settings if no file found
-  }
-}
 
 // Function to save settings
 function saveSettings(settings) {
@@ -62,13 +48,36 @@ function saveSettings(settings) {
 // Handle saving settings
 ipcMain.handle('save-settings', (event, settings) => {
   saveSettings(settings);
-  console.log('Settings saved successfully! '+ settings);
+  console.log('Settings saved successfully! ' + settings);
   return 'Settings saved successfully!';
 });
 
+function loadSettings() {
+  try {
+    const data = fs.readFileSync(dataFilePath, 'utf-8');
+    return JSON.parse(data);
+  } catch (err) {
+    console.log('Error reading settings:', err);
+    return {}; // Return default settings if no file found
+  }
+}
 // Handle loading settings
 ipcMain.handle('load-settings', () => {
   return loadSettings();
+});
+
+function getFingerprint() {
+  try {
+    const id = machineIdSync();
+    return id;
+  } catch (error) {
+    console.error('Error getting fingerprint:', error);
+    return "erro";
+  }
+}
+
+ipcMain.handle('get-fingerprint', () => {
+  return getFingerprint();
 });
 
 ipcMain.handle('query-database', async (event, query) => {

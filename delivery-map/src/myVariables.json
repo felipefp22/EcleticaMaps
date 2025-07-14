@@ -1,5 +1,7 @@
 {
   "mainLocationLatitude": "-23.6412056",
   "mainLocationLongitude": "-46.7118066",
-  "zoom": 15
+  "zoom": 15,
+  "pontoA": "xpto",
+  "pontoB": "U2FsdGVkX1/LA6oLHSTWnxuf5NJvdPIPnQdgxk5YBApW8/tZ46kwoYIRtzpL+j54"
 }

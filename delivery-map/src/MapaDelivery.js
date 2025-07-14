@@ -149,11 +149,12 @@ export default function MapaDelivery() {
       setZoom(importedVariables.zoom);
     }
   }, []);
-  useEffect(() => {
-    console.log('Updated settings:', settings);
-    console.log('Updated myVariables:', myVariables);
-    console.log('Updated zoom:', zoom);
-  }, [settings, myVariables, zoom]);
+  
+//   useEffect(() => {
+//     console.log('Updated settings:', settings);
+//     console.log('Updated myVariables:', myVariables);
+//     console.log('Updated zoom:', zoom);
+//   }, [settings, myVariables, zoom]);
 
   useEffect(() => {
     updateMarkersPontosDeEntrega();
