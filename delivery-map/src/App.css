@@ -45,11 +45,11 @@
 }
 
 .barraSuperior2 {
-  background-color: rgb(255, 255, 255); /* Light blue-gray */
+  background-color: rgb(238, 227, 255); /* Light blue-gray */
   border: 1px solid #ccc; /* Subtle border */
   display: flex;
   align-items: center; /* Vertically align items */
-  justify-content: flex-start; /* Align items horizontally */
+  justify-content: center; /* Align items horizontally */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.714); /* Soft shadow */
   font-family: Arial, sans-serif;
 }

@@ -312,6 +312,7 @@ export default function MapaDelivery() {
 
         <button onClick={fetchDataToLocation} className='btn-light'>ATUALIZAR</button>
       </div>
+      {myVariables && <div className='mapa' id='mapa' style={{ height: '87vh', width: '100vw' }}></div>} {/* Div for the map */}
 
       <div className='barraSuperior2'>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -342,9 +343,6 @@ export default function MapaDelivery() {
 
         </div>
       </div>
-
-
-      {myVariables && <div className='mapa' id='mapa' style={{ height: '87vh', width: '100vw' }}></div>} {/* Div for the map */}
 
       {isModalVisible && (
         <div className="popup-modal">
