@@ -29,6 +29,7 @@
   "build": {
     "appId": "com.felipedev.delivery-map",
     "productName": "DeliveryMap",
+    "icon": "public/motoboy.png",
     "files": [
       "build/**/*",
       "node_modules/**/*",

@@ -21,8 +21,9 @@ export async function verifyIfMachineIsAuthorazized() {
             console.log('Unauthorized machine:', machineFingerprint);
             return false;
         }
+    } else{
+        return true;
     }
-    return false;
 }
 
 export async function authorizeNewMachnine(password) {

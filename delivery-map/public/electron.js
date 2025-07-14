@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, Menu } = require('electron');
 const mysql = require('mysql2');
 const path = require('path');
 const { machineIdSync } = require('node-machine-id');
@@ -23,7 +23,7 @@ app.on('ready', async () => {
       enableRemoteModule: false,
     },
   });
-
+  Menu.setApplicationMenu(null);
   // Load your React app
   //win.loadURL('http://localhost:3000'); // For development
   win.loadURL(`file://${path.join(__dirname, "../build/index.html")}`);
