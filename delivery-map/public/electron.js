@@ -3,6 +3,8 @@ const mysql = require('mysql2');
 const path = require('path');
 const { machineIdSync } = require('node-machine-id');
 const fs = require('fs');
+const { downloadTiles } = require('@codingspark/tiles-downloader');
+
 
 let win;
 const logFilePath = path.join(process.cwd(), 'app.log');
@@ -21,12 +23,19 @@ app.on('ready', async () => {
       preload: path.join(__dirname, 'preload.js'), // Secure bridge
       contextIsolation: true,
       enableRemoteModule: false,
+      devTools: true,
     },
   });
-  Menu.setApplicationMenu(null);
+  // Menu.setApplicationMenu(null);
   // Load your React app
   //win.loadURL('http://localhost:3000'); // For development
   win.loadURL(`file://${path.join(__dirname, "../build/index.html")}`);
+
+  globalShortcut.register('CommandOrControl+Shift+D', () => {
+    if (win) {
+      win.webContents.openDevTools({ mode: 'detach' }); // or 'undocked', 'bottom', etc.
+    }
+  });
 
   win.on('closed', () => {
     mainWindow = null;
@@ -78,6 +87,57 @@ function getFingerprint() {
 
 ipcMain.handle('get-fingerprint', () => {
   return getFingerprint();
+});
+
+ipcMain.handle('download-tiles', async (evt, args) => {
+  async function fetchTiles(centerLat, centerLon, radiusMeters, minZoom, maxZoom) {
+    const metersPerDegreeLat = 111_320;
+    const metersPerDegreeLon = 111_320 * Math.cos(centerLat * Math.PI / 180);
+
+    const latDelta = radiusMeters / metersPerDegreeLat;
+    const lonDelta = radiusMeters / metersPerDegreeLon;
+
+    const bounds = {
+      minLat: centerLat - latDelta,
+      maxLat: centerLat + latDelta,
+      minLon: centerLon - lonDelta,
+      maxLon: centerLon + lonDelta,
+    };
+
+    // path in your app to save tiles
+    const outputRoot = path.join(__dirname, 'tiles');
+
+    // optionally delete old tiles
+    if (fs.existsSync(outputRoot)) {
+      fs.rmSync(outputRoot, { recursive: true, force: true });
+    }
+
+    await downloadTiles(
+      {
+        url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+        zoomLevels: Array.from({ length: maxZoom - minZoom + 1 }, (_, i) => i + minZoom),
+        bounds,
+        throttleConfig: { limit: 2, interval: 500 }, // adjust rate-limiting
+      },
+      async ({ x, y, z, buffer }) => {
+        const outDir = path.join(outputRoot, `${z}`, `${x}`);
+        fs.mkdirSync(outDir, { recursive: true });
+        const filePath = path.join(outDir, `${y}.png`);
+        await fs.promises.writeFile(filePath, buffer);
+        console.log('Tile saved:', filePath); // <-- full path
+
+      }
+    );
+
+    console.log('Tiles download complete');
+  }
+
+  try {
+    return await fetchTiles(args.lat, args.lon, args.radius, args.minZoom, args.maxZoom);
+  } catch (err) {
+    console.error('Tile download failed:', err);
+    throw err;
+  }
 });
 
 ipcMain.handle('query-database', async (event, query) => {

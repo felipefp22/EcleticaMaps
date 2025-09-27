@@ -44,3 +44,33 @@ export function getOffsetPosition(lat, lng, index, zoom) {
 
     return [newLat, newLng]; // 🟢 Return array (already correct)
 }
+
+export function sanitizeLatLng(location) {
+  const extractNumber = (value) => {
+    if (typeof value === 'number') return value;
+    if (typeof value === 'string') {
+      const match = value.match(/-?\d+\.\d+/); // Get first valid float from string
+      if (match) return parseFloat(match[0]);
+    }
+    return null;
+  };
+
+  const cleanLat = extractNumber(location.latitude);
+  const cleanLng = extractNumber(location.longitude);
+
+  if (
+    cleanLat === null || cleanLng === null ||
+    isNaN(cleanLat) || isNaN(cleanLng) ||
+    cleanLat < -90 || cleanLat > 90 ||
+    cleanLng < -180 || cleanLng > 180
+  ) {
+    console.warn("Invalid LatLng found:", { latitude: location.latitude, longitude: location.longitude });
+    return null; // Invalid data
+  }
+
+  return {
+    ...location,
+    latitude: cleanLat,
+    longitude: cleanLng
+  };
+}

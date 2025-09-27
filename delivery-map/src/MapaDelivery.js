@@ -9,7 +9,7 @@ import { faFireFlameCurved } from '@fortawesome/free-solid-svg-icons';
 import 'leaflet.markercluster/dist/leaflet.markercluster.js';
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 import 'leaflet.markercluster/dist/MarkerCluster.css';
-import { filterLoccationsOverLaping } from './ManageOverlapPoints';
+import { filterLoccationsOverLaping, sanitizeLatLng } from './ManageOverlapPoints';
 
 export default function MapaDelivery() {
   const [settings, setSettings] = useState({});
@@ -26,7 +26,6 @@ export default function MapaDelivery() {
     // SEM CLUSTER--------
 
     if (myVariables && zoom && myVariables.mainLocationLatitude && myVariables.mainLocationLongitude) {
-      console.log('myVariables:', myVariables);
       // Inicializa o mapa
       mapRef.current = L.map('mapa').setView([myVariables.mainLocationLatitude, myVariables.mainLocationLongitude], zoom); // Define a centralização do mapa
 
@@ -36,6 +35,16 @@ export default function MapaDelivery() {
         maxZoom: 19,
         attribution: '&copy; OpenStreetMap contributors',
       }).addTo(mapRef.current);
+
+      const tileLayer = L.tileLayer(`/tiles/{z}/{x}/{y}.png`, {
+        minZoom: 12,
+        maxZoom: 19,
+        attribution: '&copy; My Tiles',
+      }).addTo(mapRef.current);
+
+      tileLayer.on('tileloadstart', (event) => {
+        console.log('Requesting tile:', event.coords);
+      });
 
       // Adicionando marcador principal
       const pizzaIcon = L.icon({
@@ -54,7 +63,6 @@ export default function MapaDelivery() {
       markersRef.current = L.layerGroup().addTo(mapRef.current);
 
       fetchDataToLocation();
-      console.log("zoom  " + zoom)
 
       //------------------------------
       return () => {
@@ -62,79 +70,6 @@ export default function MapaDelivery() {
       };
     }
   }, [myVariables, zoom]);
-
-  // useEffect(() => {
-  //   // COM CLUSTER--------
-
-  //   if (myVariables && zoom && myVariables.mainLocationLatitude && myVariables.mainLocationLongitude) {
-  //     console.log('myVariables:', myVariables);
-
-  //     // Inicializa o mapa
-  //     mapRef.current = L.map('mapa').setView(
-  //       [myVariables.mainLocationLatitude, myVariables.mainLocationLongitude],
-  //       zoom
-  //     );
-
-  //     // Adiciona camada OSM
-  //     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  //       maxZoom: 19,
-  //       attribution: '&copy; OpenStreetMap contributors',
-  //     }).addTo(mapRef.current);
-
-  //     // Ícone principal (restaurante)
-  //     const pizzaIcon = L.icon({
-  //       iconUrl: PizzaFav,
-  //       iconSize: [70, 70],
-  //       iconAnchor: [20, 40],
-  //       popupAnchor: [0, -40],
-  //     });
-
-  //     L.marker(
-  //       [myVariables.mainLocationLatitude, myVariables.mainLocationLongitude],
-  //       { icon: pizzaIcon }
-  //     )
-  //       .addTo(mapRef.current)
-  //       .bindPopup('RESTAURANTE')
-  //       .openPopup();
-
-  //     // ✅ INICIALIZA MARKER CLUSTER
-  //     markersRef.current = L.markerClusterGroup({
-  //       iconCreateFunction: (cluster) => {
-  //         const count = cluster.getChildCount();
-  //         return L.divIcon({
-  //           html: `<div style="
-  //             background: rgba(148, 56, 235, 07); 
-  //             color: white; 
-  //             font-weight: bold;
-  //             font-size: 21px; 
-  //             width: 40px; 
-  //             height: 40px; 
-  //             display: flex; 
-  //             align-items: center; 
-  //             justify-content: center;
-  //             border: 3px solid white;
-  //             box-shadow: 0 0 4px rgba(0,0,0,0.5);
-  //           ">[${count}]</div>`,
-  //           className: '',
-  //           iconSize: [40, 40],
-  //         });
-  //       },
-  //     });
-
-  //     markersRef.current.addTo(mapRef.current); // ⬅️ Adiciona cluster ao mapa
-
-  //     // Carrega dados
-  //     fetchDataToLocation();
-  //     console.log('zoom  ' + zoom);
-
-  //     // Cleanup
-  //     return () => {
-  //       mapRef.current.remove();
-  //     };
-  //   }
-  // }, [myVariables, zoom]);
-  // Load settings when the component mounts / can be with clustr or without cluste <>----<>
-
 
   useEffect(() => {
     // Load settings when the component mounts
@@ -150,12 +85,7 @@ export default function MapaDelivery() {
       setZoom(importedVariables.zoom);
     }
   }, []);
-  
-//   useEffect(() => {
-//     console.log('Updated settings:', settings);
-//     console.log('Updated myVariables:', myVariables);
-//     console.log('Updated zoom:', zoom);
-//   }, [settings, myVariables, zoom]);
+
 
   useEffect(() => {
     updateMarkersPontosDeEntrega();
@@ -177,7 +107,9 @@ export default function MapaDelivery() {
       }
 
       const filteredLocations = filterLoccationsOverLaping(locations);
-      filteredLocations.forEach(location => {
+      const sanitizedLocations = filteredLocations.map(location => sanitizeLatLng(location));
+
+      sanitizedLocations.forEach(location => {
         if (!location.entregador && location.flag_dely != "V") {
           PontosDeEntrega({
             map: mapRef.current,
@@ -238,8 +170,8 @@ export default function MapaDelivery() {
     }
   };
 
-  const [newLatRestaurant, setNewLatRestaurant] = useState(null);
-  const [newLngRestaurant, setNewLngRestaurant] = useState(null);
+  const [newLatRestaurant, setNewLatRestaurant] = useState("");
+  const [newLngRestaurant, setNewLngRestaurant] = useState("");
 
   function saveNewRestaurantLocation() {
     // Save the new restaurant location
@@ -254,6 +186,14 @@ export default function MapaDelivery() {
       // Save the updated settings
       window.electronAPI.saveSettings(updatedSettings).then((response) => {
         setSettings(updatedSettings); // Update state with the new settings
+      });
+
+      window.electronAPI.downloadTiles({
+        lat: newLatRestaurant,
+        lon: newLngRestaurant,
+        radius: 20000,
+        minZoom: 12,
+        maxZoom: 19
       });
 
       setNewLatRestaurant(null);
@@ -283,12 +223,12 @@ export default function MapaDelivery() {
     <div className="App">
 
       <div className='barraSuperior1'>
-        <button className='btn-light' onClick={handleOpenModal}>Salvar-Local</button>
+        <button className='btn-light' onClick={() => handleOpenModal()}>Salvar-Local</button>
 
-        <input style={{ maxWidth: "170px" }} value={newLatRestaurant || ""} type="text"
+        <input style={{ maxWidth: "170px" }} value={newLatRestaurant} type="text"
           onChange={(e) => { const value = e.target.value.replace(',', '.'); if (/^-?\d*\.?\d*$/.test(value)) { setNewLatRestaurant(value); } }} placeholder="Latitude" />
 
-        <input style={{ maxWidth: "170px" }} value={newLngRestaurant || ""} type="text"
+        <input style={{ maxWidth: "170px" }} value={newLngRestaurant} type="text"
           onChange={(e) => { const value = e.target.value.replace(',', '.'); if (/^-?\d*\.?\d*$/.test(value)) { setNewLngRestaurant(value); } }} placeholder="Longitude" />
 
         <h4>|</h4>
@@ -312,7 +252,7 @@ export default function MapaDelivery() {
 
         <button onClick={fetchDataToLocation} className='btn-light'>ATUALIZAR</button>
       </div>
-      {myVariables && <div className='mapa' id='mapa' style={{ height: '87vh', width: '100vw' }}></div>} {/* Div for the map */}
+      {myVariables && <div className='mapa' id='mapa' style={{ flexGrow: 1, width: '100%' }}></div>} {/* Div for the map */}
 
       <div className='barraSuperior2'>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

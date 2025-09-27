@@ -1,8 +1,13 @@
-
+.App {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
 
 .barraSuperior1 {
   background-color: rgb(148, 56, 235); /* Vibrant purple */
   border: 1px solid black;
+  height: 50px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -45,13 +50,15 @@
 }
 
 .barraSuperior2 {
-  background-color: rgb(238, 227, 255); /* Light blue-gray */
+  background-color: rgb(246, 236, 255); /* Light blue-gray */
   border: 1px solid #ccc; /* Subtle border */
+  height: 60px;
   display: flex;
   align-items: center; /* Vertically align items */
   justify-content: center; /* Align items horizontally */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.714); /* Soft shadow */
   font-family: Arial, sans-serif;
+  height: "5vh"
 }
 
 .barraSuperior2 button {
