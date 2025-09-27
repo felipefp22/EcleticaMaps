@@ -11,6 +11,15 @@ function App() {
     checkAuthorization();
   }, []);
 
+  useEffect(() => {
+    // Listen for main process logs once
+    window.electronAPI.onMainLog((evt, msg) => {
+      console.log('[MAIN]', msg); // appears in DevTools
+    });
+
+    checkAuthorization();
+  }, []);
+  
   async function checkAuthorization() {
     if (await verifyIfMachineIsAuthorazized() === true) {
       setAuthorized(true);
@@ -22,6 +31,8 @@ function App() {
     await checkAuthorization();
     setAdminPassword('');
   }
+
+
 
   return (
     <>

@@ -30,21 +30,34 @@ export default function MapaDelivery() {
       mapRef.current = L.map('mapa').setView([myVariables.mainLocationLatitude, myVariables.mainLocationLongitude], zoom); // Define a centralização do mapa
 
       // Adiciona uma camada de tiles do OpenStreetMap
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        minZoom: 12,
-        maxZoom: 19,
-        attribution: '&copy; OpenStreetMap contributors',
-      }).addTo(mapRef.current);
+      // L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      //   minZoom: 12,
+      //   maxZoom: 19,
+      //   attribution: '&copy; OpenStreetMap contributors',
+      // }).addTo(mapRef.current);
 
-      const tileLayer = L.tileLayer(`/tiles/{z}/{x}/{y}.png`, {
+      const tileLayer = L.tileLayer('tiles/{z}/{x}/{y}.png', {
         minZoom: 12,
-        maxZoom: 19,
+        maxZoom: 18,
         attribution: '&copy; My Tiles',
       }).addTo(mapRef.current);
 
-      tileLayer.on('tileloadstart', (event) => {
-        console.log('Requesting tile:', event.coords);
+      // listen for failed tiles
+      tileLayer.on('tileerror', function (event) {
+        // replace src with fallback
+        event.tile.src = event.tile.src
+          .replace(/^.*tiles.*$/, event.coords
+            ? `https://a.tile.openstreetmap.org/${event.coords.z}/${event.coords.x}/${event.coords.y}.png`
+            : 'https://tile.openstreetmap.org/0/0/0.png');
       });
+
+      // tileLayer.on('tileloadstart', function (event) {
+      //   console.log("Loading tile:", event.tile.src);
+      // });
+
+      // tileLayer.on('tileload', function (event) {
+      //   console.log("Tile successfully loaded:", event.tile.src);
+      // });
 
       // Adicionando marcador principal
       const pizzaIcon = L.icon({
@@ -188,13 +201,13 @@ export default function MapaDelivery() {
         setSettings(updatedSettings); // Update state with the new settings
       });
 
-      window.electronAPI.downloadTiles({
-        lat: newLatRestaurant,
-        lon: newLngRestaurant,
-        radius: 20000,
-        minZoom: 12,
-        maxZoom: 19
-      });
+      // window.electronAPI.downloadTiles({
+      //   lat: newLatRestaurant,
+      //   lon: newLngRestaurant,
+      //   radius: 20000,
+      //   minZoom: 12,
+      //   maxZoom: 19
+      // });
 
       setNewLatRestaurant(null);
       setNewLngRestaurant(null);

@@ -3,8 +3,10 @@ const mysql = require('mysql2');
 const path = require('path');
 const { machineIdSync } = require('node-machine-id');
 const fs = require('fs');
-const { downloadTiles } = require('@codingspark/tiles-downloader');
+const axios = require('axios');
 
+
+// const { fetchTiles } = require('./tiles');
 
 let win;
 const logFilePath = path.join(process.cwd(), 'app.log');
@@ -43,6 +45,13 @@ app.on('ready', async () => {
 });
 
 const dataFilePath = "./src/myVariables.json"
+
+function logToRenderer(message) {
+  console.log(message); // still logs in terminal
+  if (win && win.webContents) {
+    win.webContents.send('main-log', message);
+  }
+}
 
 // Function to save settings
 function saveSettings(settings) {
@@ -89,56 +98,72 @@ ipcMain.handle('get-fingerprint', () => {
   return getFingerprint();
 });
 
-ipcMain.handle('download-tiles', async (evt, args) => {
-  async function fetchTiles(centerLat, centerLon, radiusMeters, minZoom, maxZoom) {
-    const metersPerDegreeLat = 111_320;
-    const metersPerDegreeLon = 111_320 * Math.cos(centerLat * Math.PI / 180);
+// ipcMain.handle('download-tiles', async (evt, args) => {
 
-    const latDelta = radiusMeters / metersPerDegreeLat;
-    const lonDelta = radiusMeters / metersPerDegreeLon;
+//   async function fetchTiles(centerLat, centerLon, radiusMeters, minZoom, maxZoom) {
+//     const outputRoot = path.join(__dirname, '..', '..', '..', 'tiles');
+//     fs.mkdirSync(outputRoot, { recursive: true });
+//     logToRenderer(`outputRoot: ${outputRoot}`);
 
-    const bounds = {
-      minLat: centerLat - latDelta,
-      maxLat: centerLat + latDelta,
-      minLon: centerLon - lonDelta,
-      maxLon: centerLon + lonDelta,
-    };
+//     logToRenderer(`lat: ${centerLat}, lon: ${centerLon}, radius: ${radiusMeters}, minZoom: ${minZoom}, maxZoom: ${maxZoom}`);
 
-    // path in your app to save tiles
-    const outputRoot = path.join(__dirname, 'tiles');
+//     const metersPerDegreeLat = 111_320;
+//     const metersPerDegreeLon = 111_320 * Math.cos(centerLat * Math.PI / 180);
 
-    // optionally delete old tiles
-    if (fs.existsSync(outputRoot)) {
-      fs.rmSync(outputRoot, { recursive: true, force: true });
-    }
+//     const latDelta = radiusMeters / metersPerDegreeLat;
+//     const lonDelta = radiusMeters / metersPerDegreeLon;
 
-    await downloadTiles(
-      {
-        url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-        zoomLevels: Array.from({ length: maxZoom - minZoom + 1 }, (_, i) => i + minZoom),
-        bounds,
-        throttleConfig: { limit: 2, interval: 500 }, // adjust rate-limiting
-      },
-      async ({ x, y, z, buffer }) => {
-        const outDir = path.join(outputRoot, `${z}`, `${x}`);
-        fs.mkdirSync(outDir, { recursive: true });
-        const filePath = path.join(outDir, `${y}.png`);
-        await fs.promises.writeFile(filePath, buffer);
-        console.log('Tile saved:', filePath); // <-- full path
+//     const zoomLevels = Array.from({ length: maxZoom - minZoom + 1 }, (_, i) => i + minZoom);
+//     const bounds = {
+//       minLat: centerLat - latDelta,
+//       maxLat: centerLat + latDelta,
+//       minLon: centerLon - lonDelta,
+//       maxLon: centerLon + lonDelta,
+//     };
 
-      }
-    );
+//     // Convert lat/lon to tile numbers
+//     function latLonToTile(lat, lon, zoom) {
+//       const x = Math.floor(((lon + 180) / 360) * Math.pow(2, zoom));
+//       const y = Math.floor(
+//         ((1 - Math.log(Math.tan((lat * Math.PI) / 180) + 1 / Math.cos((lat * Math.PI) / 180)) / Math.PI) / 2) *
+//         Math.pow(2, zoom)
+//       );
+//       return { x, y };
+//     }
 
-    console.log('Tiles download complete');
-  }
+//     try {
+//       for (let z of zoomLevels) {
+//         const topLeft = latLonToTile(bounds.maxLat, bounds.minLon, z);
+//         const bottomRight = latLonToTile(bounds.minLat, bounds.maxLon, z);
 
-  try {
-    return await fetchTiles(args.lat, args.lon, args.radius, args.minZoom, args.maxZoom);
-  } catch (err) {
-    console.error('Tile download failed:', err);
-    throw err;
-  }
-});
+//         for (let x = topLeft.x; x <= bottomRight.x; x++) {
+//           for (let y = topLeft.y; y <= bottomRight.y; y++) {
+//             const url = `https://tile.openstreetmap.org/${z}/${x}/${y}.png`;
+//             const outDir = path.join(outputRoot, z.toString(), x.toString());
+//             fs.mkdirSync(outDir, { recursive: true });
+//             const filePath = path.join(outDir, `${y}.png`);
+
+//             const response = await axios.get(url, { responseType: 'arraybuffer' });
+//             fs.writeFileSync(filePath, response.data);
+//             logToRenderer(`Tile saved: ${filePath}`);
+//           }
+//         }
+//       }
+//       logToRenderer('All tiles downloaded!');
+//     } catch (err) {
+//       logToRenderer('Error downloading tiles:', err);
+//     }
+
+//     logToRenderer('Tiles download complete');
+//   }
+
+//   try {
+//     return await fetchTiles(args.lat, args.lon, args.radius, args.minZoom, args.maxZoom);
+//   } catch (err) {
+//     console.error('Tile download failed:', err);
+//     throw err;
+//   }
+// });
 
 ipcMain.handle('query-database', async (event, query) => {
   const connection = mysql.createConnection({

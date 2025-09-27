@@ -6,7 +6,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   saveSettings: (settings) => ipcRenderer.invoke('save-settings', settings),
   loadSettings: () => ipcRenderer.invoke('load-settings'),
   getFingerprint: () => ipcRenderer.invoke('get-fingerprint'),
-  downloadTiles: (params) => ipcRenderer.invoke('download-tiles', params),
+  onMainLog: (callback) => ipcRenderer.on('main-log', callback),
+    // downloadTiles: (params) => ipcRenderer.invoke('download-tiles', params),
 
 });
 
